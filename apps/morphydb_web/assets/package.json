@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "alpinejs": "^3.7.0",
+    "cross-env": "^7.0.3",
+    "postcss-import": "^14.0.2",
+    "tailwindcss": "^3.0.7"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.5",
+    "postcss-loader": "^6.2.1"
+  },
+  "scripts": {
+    "dev": "cross-env TAILWIND_MODE=build NODE_ENV=development mix",
+    "watch": "cross-env TAILWIND_MODE=watch NODE_ENV=development mix watch",
+    "prod": "cross-env TAILWIND_MODE=build NODE_ENV=production mix --production"
+  }
+}
