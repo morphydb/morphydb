@@ -17,7 +17,7 @@ defmodule MorphyDBWeb.Router do
   scope "/", MorphyDBWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", PageLive
   end
 
   # Other scopes may use custom stacks.
