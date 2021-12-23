@@ -24,7 +24,7 @@ defmodule MorphyDBWeb.MixProject do
   def application do
     [
       mod: {MorphyDBWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools, :os_mon]
+      extra_applications: [:logger, :runtime_tools, :os_mon, :ex_cldr]
     ]
   end
 
@@ -49,7 +49,10 @@ defmodule MorphyDBWeb.MixProject do
       {:gettext, "~> 0.18"},
       {:morphydb, in_umbrella: true},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:ex_cldr, "~> 2.23"},
+      {:ex_cldr_numbers, "~> 2.23.3"},
+      {:ex_cldr_dates_times, "~> 2.10.1"}
     ]
   end
 

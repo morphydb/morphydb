@@ -1,0 +1,23 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new translations manually only if they're dynamic
+## translations that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here has no
+## effect: edit them in PO (.po) files instead.
+msgid ""
+msgstr ""
+
+#, elixir-format, ex-autogen
+#: lib/morphydb_web/live/page_live.html.heex:2
+#: lib/morphydb_web/templates/layout/live.html.heex:77
+msgid "This tutorial is brought to you by %{company}"
+msgstr ""
+
+#, elixir-format, ex-autogen
+#: lib/morphydb_web/live/page_live.html.heex:1
+#: lib/morphydb_web/templates/layout/live.html.heex:76
+msgid "Welcome to %{name}!"
+msgstr ""

@@ -17,8 +17,6 @@ config :morphydb_web, MorphyDBWeb.Endpoint,
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
-    # yarn: ["watch", cd: Path.expand("../apps/morphydb_web/assets", __DIR__)]
-
     npx: [
       "tailwindcss",
       "--input=css/app.css",

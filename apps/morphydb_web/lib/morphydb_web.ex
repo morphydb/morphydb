@@ -97,6 +97,9 @@ defmodule MorphyDBWeb do
 
       import MorphyDBWeb.ErrorHelpers
       import MorphyDBWeb.Gettext
+      import MorphyDBWeb.LocalizationHelpers
+      import Gettext, only: [with_locale: 2]
+
       alias MorphyDBWeb.Router.Helpers, as: Routes
     end
   end

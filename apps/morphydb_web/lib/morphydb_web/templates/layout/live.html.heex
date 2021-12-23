@@ -1,3 +1,69 @@
+<header>
+  <nav class="w-screen bg-gray-800 shadow-xl">
+    <div class="px-2 sm:px-6 lg:px-8">
+      <div class="relative flex items-center justify-between h-16">
+        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+            <span class="sr-only">Open main menu</span>
+            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+          <div class="flex-shrink-0 flex items-center">
+            <img class="block h-8 w-auto rounded-full" src={Routes.static_path(@socket, "/images/morphy.jpg")} alt="Paul Morphy">
+          </div>
+          <div class="hidden sm:block sm:ml-6">
+            <div class="flex space-x-4">
+              <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+              <a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Analysis</a>
+              <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Settings</a>
+            
+              <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+                <%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home), class: "text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          <div class="btn-group">
+            <button class={language_class("en", @locale)} id="change-to-english" phx-hook="HandleLanguageChanged" phx-click="change_language" phx-value-lang="en"><%= with_locale(@locale, fn -> dgettext("system", "English") end) %></button> 
+            <button class={language_class("nl", @locale)} id="change-to-dutch" phx-hook="HandleLanguageChanged" phx-click="change_language" phx-value-lang="nl"><%= with_locale(@locale, fn -> dgettext("system", "Dutch") end) %></button> 
+          </div>
+
+          <div class="ml-2 border-2 border-t-black border-l-black border-b-white border-r-white w-3 h-4">
+            <div id="connected_to_server" class="bg-green-400 w-full h-full">
+            </div>
+            <div id="disconnected_from_server" class="bg-red-400 animate-pulse w-full h-full">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="sm:hidden" id="mobile-menu">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+        <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Dashboard</a>
+
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Team</a>
+
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Projects</a>
+
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Calendar</a>
+        <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+          <%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home), class: "text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium" %>
+        <% end %>
+      </div>
+    </div>
+  </nav>
+</header>
+
 <main class="container">
   <p class="alert alert-info" role="alert"
     phx-click="lv:clear-flash"
@@ -7,5 +73,7 @@
     phx-click="lv:clear-flash"
     phx-value-key="error"><%= live_flash(@flash, :error) %></p>
 
+<h2 class="text-white"><%= with_locale(@locale, fn -> gettext "Welcome to %{name}!", name: "Phoenix" end) %></h2>
+  <h3 class="text-white"><%= gettext "This tutorial is brought to you by %{company}", company: "PhraseApp", locale: @locale %></h3>
   <%= @inner_content %>
 </main>

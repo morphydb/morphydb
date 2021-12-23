@@ -1,5 +1,6 @@
 defmodule MorphyDBWeb.Router do
   use MorphyDBWeb, :router
+  alias MorphyDBWeb.CookieInspector
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,6 +9,11 @@ defmodule MorphyDBWeb.Router do
     plug :put_root_layout, {MorphyDBWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug CookieInspector
+    plug Cldr.Plug.SetLocale,
+      apps: [cldr: MorphyDBWeb.Cldr, gettext: MorphyDBWeb.Gettext],
+      from: [:session]
+    plug Cldr.Plug.PutSession
   end
 
   pipeline :api do
@@ -17,7 +23,7 @@ defmodule MorphyDBWeb.Router do
   scope "/", MorphyDBWeb do
     pipe_through :browser
 
-    live "/", PageLive
+    live "/", PageLive, :dummy
   end
 
   # Other scopes may use custom stacks.
@@ -52,5 +58,11 @@ defmodule MorphyDBWeb.Router do
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  scope "/:locale", MorphyDBWeb do
+    pipe_through :browser
+
+    live "/", PageLive
   end
 end

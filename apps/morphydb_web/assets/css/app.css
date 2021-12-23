@@ -2,6 +2,18 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+#connected_to_server, #disconnected_from_server {
+  @apply hidden;
+}
+
+.phx-connected #connected_to_server {
+  @apply block;
+}
+
+.phx-loading #disconnected_from_server {
+  @apply block;
+}
+
 /* LiveView specific classes for your customization */
 .phx-no-feedback.invalid-feedback,
 .phx-no-feedback .invalid-feedback {
