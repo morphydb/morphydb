@@ -31,8 +31,8 @@
         </div>
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
           <div class="btn-group">
-            <button class={language_class("en", @locale)} id="change-to-english" phx-hook="HandleLanguageChanged" phx-click="change_language" phx-value-lang="en"><%= with_locale(@locale, fn -> dgettext("system", "English") end) %></button> 
-            <button class={language_class("nl", @locale)} id="change-to-dutch" phx-hook="HandleLanguageChanged" phx-click="change_language" phx-value-lang="nl"><%= with_locale(@locale, fn -> dgettext("system", "Dutch") end) %></button> 
+            <button class={language_class("en", @locale)} id="change-to-english" phx-hook="HandleLanguageChanged" phx-click="change_language" phx-value-lang="en"><%= with_locale(@locale, fn -> dgettext("system", "language-en") end) %></button> 
+            <button class={language_class("nl", @locale)} id="change-to-dutch" phx-hook="HandleLanguageChanged" phx-click="change_language" phx-value-lang="nl"><%= with_locale(@locale, fn -> dgettext("system", "language-nl") end) %></button> 
           </div>
 
           <div class="ml-2 border-2 border-t-black border-l-black border-b-white border-r-white w-3 h-4">

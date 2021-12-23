@@ -8,15 +8,5 @@
 ## to merge POT files into PO files.
 msgid ""
 msgstr ""
-"Language: nl\n"
+"Language: en\n"
 "Plural-Forms: nplurals=2\n"
-
-#, elixir-format, ex-autogen
-#: lib/morphydb_web/templates/layout/live.html.heex:34
-msgid "language-en"
-msgstr "en"
-
-#, elixir-format, ex-autogen
-#: lib/morphydb_web/templates/layout/live.html.heex:35
-msgid "language-nl"
-msgstr "nl"
