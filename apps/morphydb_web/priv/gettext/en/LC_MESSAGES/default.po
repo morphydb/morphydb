@@ -13,12 +13,12 @@ msgstr ""
 
 #, elixir-format, ex-autogen
 #: lib/morphydb_web/live/page_live.html.heex:2
-#: lib/morphydb_web/templates/layout/live.html.heex:77
+#: lib/morphydb_web/templates/layout/live.html.heex:56
 msgid "This tutorial is brought to you by %{company}"
 msgstr ""
 
 #, elixir-format, ex-autogen
 #: lib/morphydb_web/live/page_live.html.heex:1
-#: lib/morphydb_web/templates/layout/live.html.heex:76
+#: lib/morphydb_web/templates/layout/live.html.heex:55
 msgid "Welcome to %{name}!"
 msgstr ""

@@ -11,11 +11,21 @@ msgid ""
 msgstr ""
 
 #, elixir-format, ex-autogen
-#: lib/morphydb_web/templates/layout/live.html.heex:34
+#: lib/morphydb_web/templates/layout/live.html.heex:19
 msgid "language-en"
 msgstr ""
 
 #, elixir-format, ex-autogen
-#: lib/morphydb_web/templates/layout/live.html.heex:35
+#: lib/morphydb_web/templates/layout/live.html.heex:20
 msgid "language-nl"
+msgstr ""
+
+#, elixir-format, ex-autogen
+#: lib/morphydb_web/templates/layout/live.html.heex:24
+msgid "connected"
+msgstr ""
+
+#, elixir-format, ex-autogen
+#: lib/morphydb_web/templates/layout/live.html.heex:27
+msgid "disconnected"
 msgstr ""
