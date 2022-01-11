@@ -1,7 +1,1 @@
-<h2 class="text-white"><%= gettext "Welcome to %{name}!", name: "Phoenix", locale: @locale %></h2>
-  <h3 class="text-white"><%= gettext "This tutorial is brought to you by %{company}", company: "PhraseApp", locale: @locale %></h3>
-
-<p class="text-white">  <%= @now %></p>
-<p class="text-white"> Current locale:  <%= @locale %></p>
-<p class="text-white">  <%= MorphyDBWeb.Cldr.get_locale().language %></p>
-<p class="text-white">  <%= Gettext.get_locale() %></p>
+<.live_component module={BoardComponent} id="main-board" />

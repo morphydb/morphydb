@@ -2,6 +2,35 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+
+@layer base {
+    :root {
+        --color-light-square: 255 252 224;
+        --color-dark-square: 0 45 117;
+    }
+}
+
+@layer components {
+    .tile {
+        @apply w-12 h-12 rounded shadow-xl flex
+    }
+}
+
+@layer utilities {
+    .tile-dark {
+        @apply bg-dark-square
+    }
+
+    .tile-light {
+        @apply bg-light-square
+    }
+
+    .tile-highlight {
+        @apply backdrop-brightness-200 backdrop-opacity-70 flex-1
+    }
+}
+
+
 #connected_to_server, #disconnected_from_server {
   @apply hidden;
 }

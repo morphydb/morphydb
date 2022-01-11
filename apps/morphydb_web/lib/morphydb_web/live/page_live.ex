@@ -1,5 +1,6 @@
 defmodule MorphyDBWeb.PageLive do
   use MorphyDBWeb, :live_view
+  alias MorphyDBWeb.Components.BoardComponent
 
   def mount(_params, session, socket) do
     {:ok, locale} = MorphyDBWeb.Cldr.validate_locale(Map.get(session, "locale"))
