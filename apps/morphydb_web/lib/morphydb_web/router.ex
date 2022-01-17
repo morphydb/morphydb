@@ -1,5 +1,7 @@
 defmodule MorphyDBWeb.Router do
   use MorphyDBWeb, :router
+
+  import Surface.Catalogue.Router
   alias MorphyDBWeb.CookieInspector
 
   pipeline :browser do
@@ -64,5 +66,12 @@ defmodule MorphyDBWeb.Router do
     pipe_through :browser
 
     live "/", PageLive
+  end
+
+  if Mix.env() == :dev do
+    scope "/" do
+      pipe_through :browser
+      surface_catalogue "/catalogue"
+    end
   end
 end

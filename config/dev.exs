@@ -53,12 +53,14 @@ config :morphydb_web, MorphyDBWeb.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :morphydb_web, MorphyDBWeb.Endpoint,
+  reloadable_compilers: [:phoenix, :elixir, :surface],
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/morphydb_web/(live|views)/.*(ex)$",
-      ~r"lib/morphydb_web/templates/.*(eex)$"
+      ~r"lib/morphydb_web/(live|views|components)/.*(ex|sface|js)$",
+      ~r"lib/morphydb_web/templates/.*(eex)$",
+      ~r"priv/catalogue/.*(ex)$",
     ]
   ]
 

@@ -11,7 +11,7 @@ defmodule MorphyDBWeb.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gettext] ++ Mix.compilers(),
+      compilers: [:gettext] ++ Mix.compilers() ++ [:surface],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -30,6 +30,7 @@ defmodule MorphyDBWeb.MixProject do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib"] ++ catalogues()
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -40,7 +41,7 @@ defmodule MorphyDBWeb.MixProject do
       {:phoenix, "~> 1.6.5"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.17.5"},
+      {:phoenix_live_view, "~> 0.17.4"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.6"},
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
@@ -52,7 +53,10 @@ defmodule MorphyDBWeb.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:ex_cldr, "~> 2.23"},
       {:ex_cldr_numbers, "~> 2.23.3"},
-      {:ex_cldr_dates_times, "~> 2.10.1"}
+      {:ex_cldr_dates_times, "~> 2.10.1"},
+      {:surface, git: "https://github.com/surface-ui/surface", override: true},
+      {:surface_formatter, github: "surface-ui/surface_formatter"},
+      {:surface_catalogue, github: "surface-ui/surface_catalogue", only: [:test, :dev]}
     ]
   end
 
@@ -63,6 +67,12 @@ defmodule MorphyDBWeb.MixProject do
     [
       setup: ["deps.get"],
       "assets.deploy": ["esbuild default --minify", "phx.digest"]
+    ]
+  end
+
+  def catalogues do
+    [
+      "priv/catalogue"
     ]
   end
 end

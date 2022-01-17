@@ -1,16 +1,26 @@
 defmodule MorphyDBWeb.Components.TileComponent do
-  use Phoenix.LiveComponent
+  use Surface.LiveComponent
 
-  def update(assigns, socket) do
-    rank = assigns.rank
-    file = assigns.file
+  prop rank, :integer
+  prop file, :integer
 
-    color = if rem(file, 2) == rem(rank, 2), do: "light", else: "dark"
+  data highlighted, :boolean, default: false
 
-    {:ok,
-     socket
-     |> assign(assigns)
-     |> assign(color: color)
-    }
+  def render(assigns) do
+    light = rem(assigns.file, 2) == rem(assigns.rank, 2)
+    dark = not light
+
+    ~F"""
+    <div
+        class={"flex", "pb-full", "w-full", "h-0", "tile", "tile-dark": dark, "tile-light": light}
+        :on-click="toggle_highlight">
+        <div class={"pb-full", "tile-highlight": @highlighted}>
+        </div>
+    </div>
+    """
+  end
+
+  def handle_event("toggle_highlight", _params, socket) do
+    {:noreply, update(socket, :highlighted, &(not &1))}
   end
 end
