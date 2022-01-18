@@ -24,7 +24,7 @@ defmodule MorphyDBWeb.MixProject do
   def application do
     [
       mod: {MorphyDBWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools, :os_mon, :ex_cldr]
+      extra_applications: [:logger, :runtime_tools, :os_mon, :ex_cldr, :crypto]
     ]
   end
 
@@ -56,7 +56,8 @@ defmodule MorphyDBWeb.MixProject do
       {:ex_cldr_dates_times, "~> 2.10.1"},
       {:surface, git: "https://github.com/surface-ui/surface", override: true},
       {:surface_formatter, github: "surface-ui/surface_formatter"},
-      {:surface_catalogue, github: "surface-ui/surface_catalogue", only: [:test, :dev]}
+      {:surface_catalogue, github: "surface-ui/surface_catalogue", only: [:test, :dev]},
+      {:uuid, "~> 1.1"}
     ]
   end
 

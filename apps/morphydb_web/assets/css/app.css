@@ -27,8 +27,19 @@
     .tile-highlight {
         @apply backdrop-brightness-200 backdrop-opacity-70 flex-1
     }
-}
 
+    .tile-highlight1 {
+        @apply flex-1 bg-red-500/70
+    }
+
+    .tile-highlight2 {
+        @apply flex-1 bg-green-500/70
+    }
+
+    .tile-highlight3 {
+        @apply flex-1 bg-yellow-500/70
+    }
+}
 
 #connected_to_server, #disconnected_from_server {
   @apply hidden;
