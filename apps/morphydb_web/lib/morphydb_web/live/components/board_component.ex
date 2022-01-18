@@ -9,10 +9,8 @@ defmodule MorphyDBWeb.Components.BoardComponent do
     ~F"""
     <div class="max-w-screen-sm md:max-w-screen-md p-4">
       <div class="grid grid-cols-8 gap-0">
-          {#for rank <- 1..8}
-              {#for file <- 1..8}
-                  <TileComponent rank={rank} file={file} highlight={Map.get(@highlighted, {file, rank})} on_highlight="toggle_highlight" />
-              {/for}
+          {#for rank <- 1..8, file <- 1..8}
+            <TileComponent rank={rank} file={file} highlight={Map.get(@highlighted, {file, rank})} on_highlight="toggle_highlight" />
           {/for}
       </div>
     </div>
@@ -27,10 +25,10 @@ defmodule MorphyDBWeb.Components.BoardComponent do
      |> update(
        :highlighted,
        fn h ->
-         if Map.has_key?(h, key) or Enum.any?(Map.values(h), fn v -> v > 0 end) do
+         if Map.has_key?(h, key) or Enum.any?(Map.values(h), &(&1 > 0)) do
            %{}
          else
-           Map.put(%{}, key, 0)
+          %{key => 0}
          end
        end
      )}
@@ -42,7 +40,7 @@ defmodule MorphyDBWeb.Components.BoardComponent do
         socket
       ) do
 
-    handle_toggle_highlight file, rank, 1, socket
+    handle_toggle_highlight(file, rank, 1, socket)
   end
 
   def handle_event(
@@ -51,7 +49,7 @@ defmodule MorphyDBWeb.Components.BoardComponent do
         socket
       ) do
 
-    handle_toggle_highlight file, rank, 2, socket
+    handle_toggle_highlight(file, rank, 2, socket)
   end
 
   def handle_event(
@@ -60,7 +58,7 @@ defmodule MorphyDBWeb.Components.BoardComponent do
         socket
       ) do
 
-    handle_toggle_highlight file, rank, 3, socket
+    handle_toggle_highlight(file, rank, 3, socket)
   end
 
   defp handle_toggle_highlight(file, rank, value, socket) do
@@ -70,7 +68,7 @@ defmodule MorphyDBWeb.Components.BoardComponent do
      socket
      |> update(
        :highlighted,
-       fn h -> delete_or_add(h, key, value) end
+       &delete_or_add(&1, key, value)
      )}
   end
 
