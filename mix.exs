@@ -48,7 +48,7 @@ defmodule MorphyDb.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:surface, "~> 0.7.5"},
-      {:surface_formatter, "~> 0.6.0"},
+      {:surface_formatter, "~> 0.7.5"},
       {:surface_catalogue, "~> 0.4.0"},
       {:set_locale, "~> 0.2.9"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
