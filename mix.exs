@@ -52,7 +52,8 @@ defmodule MorphyDb.MixProject do
       {:surface_catalogue, "~> 0.4.0"},
       {:set_locale, "~> 0.2.9"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
-      {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev}
+      {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev},
+      {:elixir_sense, github: "elixir-lsp/elixir_sense"},
     ]
   end
 
