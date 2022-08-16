@@ -1,0 +1,12 @@
+<div class="grid grid-cols-8 grid-rows-8 gap-0 h-[640px] w-[640px] md:h-[768px] md:w-[768px]">
+    {#for square_index <- 0..63}
+        <SquareComponent
+            square_index={square_index}
+            click="square_selected"
+            is_selected={Square.is_selected(@selected_squares, square_index)}
+            is_highlighted={Square.is_selected(@highlighted_squares, square_index)}
+            is_ctrl_highlighted={Square.is_selected(@highlighted_ctrl_squares, square_index)}
+            is_alt_highlighted={Square.is_selected(@highlighted_alt_squares, square_index)}
+        />
+    {/for}
+</div>

@@ -12,14 +12,10 @@ defmodule MorphyDbWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   scope "/", MorphyDbWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", HomeLive
   end
 
   # scope "/:locale", MorphyDbWeb do

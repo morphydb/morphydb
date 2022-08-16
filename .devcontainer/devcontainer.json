@@ -16,20 +16,24 @@
 				"mrorz.language-gettext",
 				"bradlc.vscode-tailwindcss",
 				"phoenixframework.phoenix",
-				"RoyalMist.vscode-eex-format",
-				"csstools.postcss"
+				"csstools.postcss",
+				"esbenp.prettier-vscode",
+				"RoyalMist.vscode-eex-format"
 			],
 			"settings": {
 				"phoenix-heex": "html",
 				"emmet.includeLanguages": {
 					"phoenix-heex": "html",
+					"surface": "html",
 					"postcss": "css"
 				},
 				"files.associations": {
-					"*.scss": "postcss"
+					"*.scss": "postcss",
+					"*.sface": "surface"
 				},
 				"tailwindCSS.includeLanguages": {
-					"phoenix-heex": "html"
+					"phoenix-heex": "html",
+					"surface": "html"
 				},
 				"[phoenix-heex]": {
 					"editor.defaultFormatter": "RoyalMist.vscode-eex-format"

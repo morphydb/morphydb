@@ -39,7 +39,6 @@ defmodule MorphyDbWeb do
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
-      import Surface
     end
   end
 
@@ -63,6 +62,43 @@ defmodule MorphyDbWeb do
   def component do
     quote do
       use Phoenix.Component
+
+      unquote(view_helpers())
+    end
+  end
+
+  def surface_view do
+    quote do
+      use Surface.View,
+        root: "lib/morphy_db_web/templates",
+        namespace: MorphyDbWeb
+
+      unquote(view_helpers())
+    end
+  end
+
+  def surface_component do
+    quote do
+      use Surface.Component
+      alias Surface.Components.LivePatch
+
+      unquote(view_helpers())
+    end
+  end
+
+  def surface_live_component do
+    quote do
+      use Surface.LiveComponent
+      alias Surface.Components.LivePatch
+
+      unquote(view_helpers())
+    end
+  end
+
+  def surface_live_view do
+    quote do
+      use Surface.LiveView, layout: {MorphyDbWeb.LayoutView, "live.html"}
+      alias Surface.Components.LivePatch
 
       unquote(view_helpers())
     end

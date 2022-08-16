@@ -1,0 +1,25 @@
+<div
+    id={"square-#{@square_index}"}
+    class={
+        "relative",
+        "bg-gradient-to-br",
+        "from-light": is_light(@square_index),
+        "to-light/75": is_light(@square_index),
+        "from-dark": is_dark(@square_index),
+        "to-dark/75": is_dark(@square_index),
+    }
+    :on-click={@click}
+    phx-value-square_index={@square_index}
+    :hook="Square">
+    <div class={
+        "absolute",
+        "left-0",
+        "top-0",
+        "right-0",
+        "bottom-0",
+        "bg-yellow-400 bg-blend-hue opacity-60": @is_selected,
+        "bg-blue-600 bg-blend-hue opacity-75": @is_highlighted,
+        "bg-green-600 bg-blend-hue opacity-75": @is_ctrl_highlighted,
+        "bg-red-600 bg-blend-hue opacity-75": @is_alt_highlighted
+    }></div>
+</div>

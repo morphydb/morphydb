@@ -54,6 +54,7 @@ defmodule MorphyDb.MixProject do
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev},
       {:elixir_sense, github: "elixir-lsp/elixir_sense"},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
     ]
   end
 

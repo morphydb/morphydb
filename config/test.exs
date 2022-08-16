@@ -8,8 +8,7 @@ config :morphy_db, MorphyDbWeb.Endpoint,
   server: false
 
 # In test we don't send emails.
-config :morphy_db, MorphyDb.Mailer,
-  adapter: Swoosh.Adapters.Test
+config :morphy_db, MorphyDb.Mailer, adapter: Swoosh.Adapters.Test
 
 # Print only warnings and errors during test
 config :logger, level: :warn
