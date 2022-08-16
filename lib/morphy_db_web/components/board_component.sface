@@ -1,4 +1,4 @@
-<div class="grid grid-cols-8 grid-rows-8 gap-0 h-[640px] w-[640px] md:h-[768px] md:w-[768px]">
+<div class="grid grid-cols-8 grid-rows-8 gap-0 h-[640px] w-[640px] md:h-[768px] md:w-[768px]" :on-click-away="deselect">
     {#for square_index <- 0..63}
         <SquareComponent
             square_index={square_index}

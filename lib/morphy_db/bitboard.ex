@@ -7,11 +7,11 @@ defmodule MorphyDb.Bitboard do
   define empty,         0
   define universal,     0xFFFFFFFFFFFFFFFF
 
-  def is_set(bitboard, square) do
-    (square &&& bitboard) === square;
+  def is_set(bitboard, bit) do
+    (bit &&& bitboard) === bit;
   end
 
-  def toggle(bitboard, square) do
-    bxor(bitboard, square)
+  def toggle(bitboard, bit) do
+    bxor(bitboard, bit)
   end
 end

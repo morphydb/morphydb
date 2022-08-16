@@ -21,8 +21,9 @@ defmodule MorphyDb.Square do
       false
   """
   def is_light(square_index) when square_index in 0..63 do
-    square = 1 <<< square_index
-    Bitboard.is_set(Bitboard.light_squares, square)
+    square_index
+    |> from_index()
+    |> (&Bitboard.is_set(Bitboard.light_squares, &1)).()
   end
 
   @doc ~S"""
@@ -43,8 +44,9 @@ defmodule MorphyDb.Square do
       true
   """
   def is_dark(square_index) when square_index in 0..63 do
-    square = 1 <<< square_index
-    Bitboard.is_set(Bitboard.dark_squares, square)
+    square_index
+    |> from_index()
+    |> (&Bitboard.is_set(Bitboard.dark_squares, &1)).()
   end
 
 
@@ -66,10 +68,10 @@ defmodule MorphyDb.Square do
       true
   """
   def is_selected(selected_squares, square_index) when square_index in 0..63 do
-    square = 1 <<< square_index
-    Bitboard.is_set(selected_squares, square)
+    square_index
+    |> from_index()
+    |> (&Bitboard.is_set(selected_squares, &1)).()
   end
-
 
   @doc ~S"""
   Toggles the bit located at square_index
@@ -89,11 +91,12 @@ defmodule MorphyDb.Square do
       0
   """
   def toggle(selected_squares, square_index) when square_index in 0..63 do
-    square = 1 <<< square_index
-    Bitboard.toggle(selected_squares, square)
+    square_index
+    |> from_index()
+    |> (&Bitboard.toggle(selected_squares, &1)).()
   end
 
-  def from_index(square_index) when square_index in 0..63 do
+  defp from_index(square_index) when square_index in 0..63 do
     1 <<< square_index
   end
 end
