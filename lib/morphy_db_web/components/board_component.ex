@@ -4,17 +4,34 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   require MorphyDb.Bitboard
   alias MorphyDb.Bitboard
   alias MorphyDb.Square
+  alias MorphyDb.Position
+  alias Surface.Components.Form
+  alias Surface.Components.Form.Field
+  alias Surface.Components.Form.Label
+  alias Surface.Components.Form.TextInput
 
   alias MorphyDbWeb.Components.SquareComponent
 
   data selected_squares, :integer, default: Bitboard.empty()
-
   data highlighted_squares, :integer, default: Bitboard.empty()
   data highlighted_alt_squares, :integer, default: Bitboard.empty()
   data highlighted_ctrl_squares, :integer, default: Bitboard.empty()
+  data position, :struct
+  prop fen, :string, required: true
+
+  # def mount(socket) do
+  #   socket = Surface.init(socket)
+
+  #   {:ok, socket |> assign(:position, Position.parse("4k3/8/8/8/8/8/4P3/4K3 w - - 5 39"))}
+  # end
+
+  def update(assigns, socket) do
+    position = Position.parse(assigns.fen)
+    {:ok, assign(socket, :position, position)}
+  end
 
   def handle_event(
-        "square_selected",
+        "square_click",
         %{"square_index" => square_index},
         socket
       ) do
@@ -35,7 +52,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   end
 
   def handle_event(
-        "square_highlighted",
+        "square_right_click",
         %{"square_index" => square_index, "alt_key" => false, "ctrl_key" => false},
         socket
       ) do
@@ -46,7 +63,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   end
 
   def handle_event(
-        "square_highlighted",
+        "square_right_click",
         %{"square_index" => square_index, "alt_key" => true},
         socket
       ) do
@@ -57,7 +74,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   end
 
   def handle_event(
-        "square_highlighted",
+        "square_right_click",
         %{"square_index" => square_index, "alt_key" => false, "ctrl_key" => true},
         socket
       ) do

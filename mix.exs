@@ -52,9 +52,9 @@ defmodule MorphyDb.MixProject do
       {:surface_catalogue, "~> 0.4.0"},
       {:set_locale, "~> 0.2.9"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
-      {:dart_sass, "~> 0.5", runtime: Mix.env() == :dev},
       {:elixir_sense, github: "elixir-lsp/elixir_sense"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:nimble_parsec, "~> 1.0"}
     ]
   end
 
@@ -66,15 +66,9 @@ defmodule MorphyDb.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "assets.build"],
-      "assets.build": [
-        "esbuild default",
-        "sass default",
-        "tailwind default"
-      ],
+      setup: ["deps.get"],
       "assets.deploy": [
         "esbuild default --minify",
-        "sass default",
         "tailwind default --minify",
         "phx.digest"
       ]

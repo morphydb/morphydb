@@ -1,1 +1,7 @@
-<BoardComponent id="main_board" />
+<div class="flex">
+<BoardComponent id="main_board" fen={@fen} />
+<Form for={:position} submit="update_fen">
+    <TextInput field="fen" value={@fen}/>
+    <Submit>Update</Submit>
+</Form>
+</div>

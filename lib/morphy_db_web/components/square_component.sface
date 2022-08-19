@@ -13,13 +13,14 @@
     :hook="Square">
     <div class={
         "absolute",
-        "left-0",
-        "top-0",
-        "right-0",
-        "bottom-0",
+        "inset-0",
         "bg-yellow-400 bg-blend-hue opacity-60": @is_selected,
         "bg-blue-600 bg-blend-hue opacity-75": @is_highlighted,
         "bg-green-600 bg-blend-hue opacity-75": @is_ctrl_highlighted,
         "bg-red-600 bg-blend-hue opacity-75": @is_alt_highlighted
-    }></div>
+    }>
+        {#if @piece}
+            <img class="w-full h-full p-1" src={piece_image(@piece)}>
+        {/if}
+    </div>
 </div>
