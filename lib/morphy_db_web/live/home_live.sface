@@ -1,7 +1,10 @@
-<div class="flex">
-<BoardComponent id="main_board" fen={@fen} />
-<Form for={:position} submit="update_fen">
-    <TextInput field="fen" value={@fen}/>
-    <Submit>Update</Submit>
-</Form>
+<div class="flex gap-2">
+  <div class="basis-5/12 flex flex-col gap-3">
+    <BoardComponent id="main_board" fen={@fen} />
+    <form action="javascript:void(0)" :on-submit="update_fen" class="flex gap-2">
+      <input type="text" name="fen" value={@fen} class="form-control input input-bordered w-full">
+      <button type="submit" class="btn">Update fen</button>
+    </form>
+  </div>
+  <MoveTable id="move_table" />
 </div>

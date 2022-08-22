@@ -97,7 +97,7 @@ defmodule MorphyDb.FenParser do
   end
 
   defp piece_placement(_, value, context = %Position{}, _, _) do
-    {[], %{context | pieces: value |> Enum.map(&map_piece/1)}}
+    {[], %{context | pieces: value |> Enum.map(&map_piece/1) |> Enum.reverse}}
   end
 
   defp side_to_move(_, [?b], context = %Position{}, _, _) do

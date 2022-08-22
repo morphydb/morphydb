@@ -3,7 +3,6 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "elixir",
 	"workspaceFolder": "/workspace",
-
 	// Configure tool-specific properties.
 	"customizations": {
 		// Configure properties specific to VS Code.
@@ -22,6 +21,7 @@
 			],
 			"settings": {
 				"phoenix-heex": "html",
+				"surface": "html",
 				"emmet.includeLanguages": {
 					"phoenix-heex": "html",
 					"surface": "html",
@@ -35,21 +35,18 @@
 					"phoenix-heex": "html",
 					"surface": "html"
 				},
-				"[phoenix-heex]": {
-					"editor.defaultFormatter": "RoyalMist.vscode-eex-format"
-				},
-				"elixirLS.fetchDeps": false
+				"elixirLS.fetchDeps": false,
+				"editor.rulers": [
+					130
+				]
 			}
 		}
 	},
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// This can be used to network with other containers or with the host. 
 	"forwardPorts": [],
-
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "mix deps.get"
-
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
 }

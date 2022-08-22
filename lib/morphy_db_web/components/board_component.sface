@@ -1,13 +1,17 @@
-<div class="basis-2/5 grid grid-cols-8 grid-rows-8 gap-0 aspect-square w-1/2" :on-click-away="deselect">
-    {#for {piece, square_index} <- Enum.with_index(@position.pieces)}
-        <SquareComponent
-            square_index={square_index}
-            piece={piece}
-            click="square_click"
-            is_selected={Square.is_selected(@selected_squares, square_index)}
-            is_highlighted={Square.is_selected(@highlighted_squares, square_index)}
-            is_ctrl_highlighted={Square.is_selected(@highlighted_ctrl_squares, square_index)}
-            is_alt_highlighted={Square.is_selected(@highlighted_alt_squares, square_index)}
-        />
-    {/for}
+<div
+  class="grid grid-cols-8 grid-rows-8 aspect-square"
+  :on-click-away="deselect"
+>
+  {#for {piece, square_index} <- Enum.with_index(@position.pieces)}
+    <SquareComponent
+      square_index={square_index}
+      click="square_click"
+      is_selected={piece && Square.is_selected(@selected_squares, square_index)}
+      is_highlighted={Square.is_selected(@highlighted_squares, square_index)}
+      is_ctrl_highlighted={Square.is_selected(@highlighted_ctrl_squares, square_index)}
+      is_alt_highlighted={Square.is_selected(@highlighted_alt_squares, square_index)}
+    >
+      <PieceComponent :if={piece} square_index={square_index} piece={piece} />
+    </SquareComponent>
+  {/for}
 </div>

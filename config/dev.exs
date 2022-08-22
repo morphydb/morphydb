@@ -51,6 +51,7 @@ config :morphy_db, MorphyDbWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"assets/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/morphy_db_web/(live|views|components)/.*(ex|sface|js)$",
       ~r"lib/morphy_db_web/templates/.*(eex)$",

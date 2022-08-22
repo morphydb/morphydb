@@ -5,12 +5,9 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   alias MorphyDb.Bitboard
   alias MorphyDb.Square
   alias MorphyDb.Position
-  alias Surface.Components.Form
-  alias Surface.Components.Form.Field
-  alias Surface.Components.Form.Label
-  alias Surface.Components.Form.TextInput
 
   alias MorphyDbWeb.Components.SquareComponent
+  alias MorphyDbWeb.Components.PieceComponent
 
   data selected_squares, :integer, default: Bitboard.empty()
   data highlighted_squares, :integer, default: Bitboard.empty()
@@ -18,12 +15,6 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   data highlighted_ctrl_squares, :integer, default: Bitboard.empty()
   data position, :struct
   prop fen, :string, required: true
-
-  # def mount(socket) do
-  #   socket = Surface.init(socket)
-
-  #   {:ok, socket |> assign(:position, Position.parse("4k3/8/8/8/8/8/4P3/4K3 w - - 5 39"))}
-  # end
 
   def update(assigns, socket) do
     position = Position.parse(assigns.fen)
@@ -91,6 +82,15 @@ defmodule MorphyDbWeb.Components.BoardComponent do
      |> assign(:highlighted_squares, 0)
      |> assign(:highlighted_alt_squares, 0)
      |> assign(:highlighted_ctrl_squares, 0)}
+  end
+
+  def handle_event("dropped", %{"source" => source, "target" => target}, socket) do
+
+    IO.inspect(socket)
+    IO.puts("Source: #{source}, Target: #{target}")
+
+    {:noreply, socket}
+
   end
 
   defp has_highlighted_squares(socket) do
