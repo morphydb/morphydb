@@ -1,10 +1,12 @@
 <div class="flex gap-2">
-  <div class="basis-5/12 flex flex-col gap-3">
+  <div class="basis-2/3 lg:basis-5/12 flex flex-col gap-3">
     <BoardComponent id="main_board" fen={@fen} />
-    <form action="javascript:void(0)" :on-submit="update_fen" class="flex gap-2">
+    <form action="javascript:void(0)" :on-submit="load_fen" class="flex gap-2">
       <input type="text" name="fen" value={@fen} class="form-control input input-bordered w-full" x-on:focus="$event.target.select()">
-      <button type="submit" class="btn">Update fen</button>
+      <button type="submit" class="btn">{gettext "Load FEN"}</button>
     </form>
   </div>
-  <MoveTable id="move_table" />
+  <div class="basis-1/3 lg:basis-7/12">
+    <MoveTable id="move_table" />
+  </div>
 </div>

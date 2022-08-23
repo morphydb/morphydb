@@ -7,7 +7,7 @@ defmodule MorphyDbWeb.HomeLive do
     {:ok, assign(socket, :fen, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")}
   end
 
-  def handle_event("update_fen", %{"fen" => fen}, socket) do
+  def handle_event("load_fen", %{"fen" => fen}, socket) do
     {:noreply, assign(socket, :fen, fen)}
   end
 end

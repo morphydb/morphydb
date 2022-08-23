@@ -2,16 +2,18 @@
   class="grid grid-cols-8 grid-rows-8 aspect-square"
   :on-click-away="deselect"
 >
-  {#for {piece, square_index} <- Enum.with_index(@position.pieces)}
-    <SquareComponent
-      square_index={square_index}
-      click="square_click"
-      is_selected={piece && Square.is_selected(@selected_squares, square_index)}
-      is_highlighted={Square.is_selected(@highlighted_squares, square_index)}
-      is_ctrl_highlighted={Square.is_selected(@highlighted_ctrl_squares, square_index)}
-      is_alt_highlighted={Square.is_selected(@highlighted_alt_squares, square_index)}
-    >
-      <PieceComponent :if={piece} square_index={square_index} piece={piece} />
-    </SquareComponent>
+  {#for rank <- 7..0}
+    {#for file <- 0..7}
+      <SquareComponent
+            square_index={8 * rank + file}
+            click="square_click"
+            is_selected={Enum.at(@position.pieces, 8 * rank + file) && Square.is_selected(@selected_squares, 8 * rank + file)}
+            is_highlighted={Square.is_selected(@highlighted_squares, 8 * rank + file)}
+            is_ctrl_highlighted={Square.is_selected(@highlighted_ctrl_squares, 8 * rank + file)}
+            is_alt_highlighted={Square.is_selected(@highlighted_alt_squares, 8 * rank + file)}
+          >
+            <PieceComponent :if={Enum.at(@position.pieces, 8 * rank + file)} square_index={8 * rank + file} piece={Enum.at(@position.pieces, 8 * rank + file)} />
+          </SquareComponent>
+    {/for}
   {/for}
 </div>

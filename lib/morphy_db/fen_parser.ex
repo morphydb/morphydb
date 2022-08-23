@@ -28,13 +28,13 @@ defmodule MorphyDb.FenParser do
       |> times(min: 1, max: 8),
       digit_8
     ])
+    |> post_traverse(:piece_placement)
 
   piece_placement =
     rank
     |> concat(ignore(string("/")))
     |> times(7)
     |> concat(rank)
-    |> post_traverse(:piece_placement)
 
   ep_rank = ascii_char([?3, ?6])
   ep_square = file |> concat(ep_rank)
@@ -63,10 +63,15 @@ defmodule MorphyDb.FenParser do
     |> concat(castling_ability)
     |> concat(whitespace)
     |> concat(en_passant_target_square)
-    |> concat(whitespace)
-    |> concat(half_move_counter)
-    |> concat(whitespace)
-    |> concat(full_move_counter)
+    |> concat(
+      optional(
+        empty()
+        |> concat(whitespace)
+        |> concat(half_move_counter)
+        |> concat(whitespace)
+        |> concat(full_move_counter)
+      )
+    )
 
   defparsec(:fen, concat(initialize, position) |> eos())
 
@@ -96,8 +101,12 @@ defmodule MorphyDb.FenParser do
     {[], %Position{fen: fen}}
   end
 
-  defp piece_placement(_, value, context = %Position{}, _, _) do
+  defp piece_placement(_, value, context = %Position{pieces: nil}, _, _) do
     {[], %{context | pieces: value |> Enum.map(&map_piece/1) |> Enum.reverse}}
+  end
+
+  defp piece_placement(_, value, context = %Position{pieces: pieces}, _, _) do
+    {[], %{context | pieces: (value |> Enum.map(&map_piece/1) |> Enum.reverse) ++ pieces}}
   end
 
   defp side_to_move(_, [?b], context = %Position{}, _, _) do

@@ -10,12 +10,7 @@
 msgid ""
 msgstr ""
 
-#: lib/morphy_db_web/components/hero.ex:21
+#: lib/morphy_db_web/live/home_live.sface:6
 #, elixir-autogen, elixir-format
-msgid "Hi, %{name}!"
-msgstr ""
-
-#: lib/morphy_db_web/templates/page/index.html.heex:3
-#, elixir-autogen, elixir-format
-msgid "Welcome to %{name}!"
+msgid "Load FEN"
 msgstr ""

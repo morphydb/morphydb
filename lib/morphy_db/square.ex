@@ -1,7 +1,6 @@
 defmodule MorphyDb.Square do
   require MorphyDb.Bitboard
   alias MorphyDb.Bitboard
-  use Bitwise
 
   @doc ~S"""
   Returns true if the square is a light square
@@ -21,7 +20,7 @@ defmodule MorphyDb.Square do
       false
   """
   def is_light(square_index) when square_index in 0..63 do
-    Bitboard.is_set(Bitboard.light_squares, square_index)
+    Bitboard.is_set(Bitboard.light_squares(), square_index)
   end
 
   @doc ~S"""
@@ -42,7 +41,7 @@ defmodule MorphyDb.Square do
       true
   """
   def is_dark(square_index) when square_index in 0..63 do
-    Bitboard.is_set(Bitboard.dark_squares, square_index)
+    Bitboard.is_set(Bitboard.dark_squares(), square_index)
   end
 
   @doc ~S"""

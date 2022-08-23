@@ -22,6 +22,7 @@
     "bg-green-600 bg-blend-hue": @is_ctrl_highlighted,
     "bg-red-600 bg-blend-hue": @is_alt_highlighted
   }>
+  {@square_index}
     <#slot />
   </div>
 </div>

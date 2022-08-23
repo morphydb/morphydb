@@ -84,15 +84,6 @@ defmodule MorphyDbWeb.Components.BoardComponent do
      |> assign(:highlighted_ctrl_squares, 0)}
   end
 
-  def handle_event("dropped", %{"source" => source, "target" => target}, socket) do
-
-    IO.inspect(socket)
-    IO.puts("Source: #{source}, Target: #{target}")
-
-    {:noreply, socket}
-
-  end
-
   defp has_highlighted_squares(socket) do
     socket.assigns
     |> Map.take([:highlighted_squares, :highlighted_alt_squares, :highlighted_ctrl_squares])

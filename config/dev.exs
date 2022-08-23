@@ -54,7 +54,7 @@ config :morphy_db, MorphyDbWeb.Endpoint,
       ~r"assets/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/morphy_db_web/(live|views|components)/.*(ex|sface|js)$",
-      ~r"lib/morphy_db_web/templates/.*(eex)$",
+      ~r"lib/morphy_db_web/templates/.*(eex|sface)$",
       ~r"priv/catalogue/.*(ex)$"
     ]
   ]

@@ -12,7 +12,7 @@ defmodule MorphyDb.Position do
   alias MorphyDb.FenParser
 
   def parse(fen) do
-    {:ok, _, _, position, _, _} = FenParser.fen(fen)
+    {:ok, _, _, position, _, _} = FenParser.fen(fen |> String.trim)
 
     position
   end

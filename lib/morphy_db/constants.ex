@@ -32,7 +32,7 @@ defmodule MorphyDb.Constants do
 
   """
 
- defmacro __using__(_opts) do
+  defmacro __using__(_opts) do
     quote do
       import MorphyDb.Constants
     end
@@ -48,7 +48,7 @@ defmodule MorphyDb.Constants do
   @doc "Define a constant. An alias for constant"
   defmacro define(name, value) do
     quote do
-      constant unquote(name), unquote(value)
+      constant(unquote(name), unquote(value))
     end
   end
 end
