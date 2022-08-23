@@ -7,7 +7,7 @@ defmodule MorphyDb.Constants do
   module that can be shared with other modules. They are implemented with
   macros so they can be used in guards and matches.
 
-  https://elixirforum.com/t/shared-module-constants/2799/6?u=jeroen
+  https://elixirforum.com/t/shared-module-constants/2799/6
 
   ## Examples:
 

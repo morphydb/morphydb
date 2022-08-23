@@ -68,7 +68,7 @@ defmodule MorphyDb.FenParser do
     |> concat(whitespace)
     |> concat(full_move_counter)
 
-  defparsec(:fen, concat(initialize, position) |> eos(), debug: true)
+  defparsec(:fen, concat(initialize, position) |> eos())
 
   defp map_piece(?K), do: %Piece{color: :white, piece: :king}
   defp map_piece(?Q), do: %Piece{color: :white, piece: :queen}

@@ -7,11 +7,42 @@ defmodule MorphyDb.Bitboard do
   define empty,         0
   define universal,     0xFFFFFFFFFFFFFFFF
 
-  def is_set(bitboard, bit) do
-    (bit &&& bitboard) === bit;
+  @doc """
+    Returns true if the bit is set
+  """
+  def is_set(bitboard, square_index) when square_index in 0..63 do
+    get_bit(bitboard, square_index) === to_bit(square_index)
   end
 
-  def toggle(bitboard, bit) do
-    bxor(bitboard, bit)
+  @doc """
+    Unsets the bit in the bitboard
+  """
+  def unset(bitboard, square_index) when square_index in 0..63 do
+    is_set(bitboard, square_index) && toggle(bitboard, square_index)
+  end
+
+  @doc """
+    Gets the bitboard with only the value at square_index
+  """
+  def get_bit(bitboard, square_index) when square_index in 0..63 do
+    band(bitboard, to_bit(square_index))
+  end
+
+  @doc """
+    Set the bit in the bitboard
+  """
+  def set_bit(bitboard, square_index) when square_index in 0..63 do
+    bor(bitboard, to_bit(square_index))
+  end
+
+  @doc """
+    Toggles the bit located at square_index
+  """
+  def toggle(bitboard, square_index) when square_index in 0..63 do
+    bxor(bitboard, to_bit(square_index))
+  end
+
+  defp to_bit(square_index) when square_index in 0..63 do
+    1 <<< square_index
   end
 end

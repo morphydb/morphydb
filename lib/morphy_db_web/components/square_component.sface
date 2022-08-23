@@ -4,8 +4,6 @@
     "square",
     "relative",
     "bg-gradient-to-br",
-    "border-base-100",
-    "border",
     "from-light": is_light(@square_index),
     "to-light/75": is_light(@square_index),
     "from-dark": is_dark(@square_index),

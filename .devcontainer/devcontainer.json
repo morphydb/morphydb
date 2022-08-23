@@ -17,7 +17,8 @@
 				"phoenixframework.phoenix",
 				"csstools.postcss",
 				"esbenp.prettier-vscode",
-				"RoyalMist.vscode-eex-format"
+				"RoyalMist.vscode-eex-format",
+				"samuel-pordeus.elixir-test"
 			],
 			"settings": {
 				"phoenix-heex": "html",

@@ -1,1 +1,4 @@
-app.scss
+*.scss
+*.css
+*.js
+*.map
