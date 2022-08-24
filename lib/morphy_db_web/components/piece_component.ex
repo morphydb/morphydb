@@ -1,5 +1,5 @@
 defmodule MorphyDbWeb.Components.PieceComponent do
-  use MorphyDbWeb, :surface_component
+  use MorphyDbWeb, :surface_live_component
 
   prop square_index, :integer, required: true
   prop piece, :struct, required: true

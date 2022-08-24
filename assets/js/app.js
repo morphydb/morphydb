@@ -33,6 +33,14 @@ let csrfToken = document
 
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
+  metadata: {
+    click: (e, el) => {
+      return {
+        alt_key: e.altKey,
+        ctrl_key: e.ctrlKey,
+      }
+    }
+  },
   hooks: Hooks,
   dom: {
     onBeforeElUpdated(from, to) {
@@ -56,3 +64,4 @@ liveSocket.connect();
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket;
+liveSocket.enableDebug();

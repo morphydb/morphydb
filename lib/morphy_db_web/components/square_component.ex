@@ -1,24 +1,14 @@
 defmodule MorphyDbWeb.Components.SquareComponent do
-  use MorphyDbWeb, :surface_component
+  use MorphyDbWeb, :surface_live_component
   alias MorphyDb.Square
-  alias MorphyDb.Bitboard
   alias MorphyDbWeb.Components.PieceComponent
 
-  prop click, :event, required: true
+  prop click, :event, required: false
   prop square, :map, required: true
 
-  prop selected_squares, :integer, required: true
-  prop highlighted_squares, :integer, required: true
-  prop highlighted_ctrl_squares, :integer, required: true
-  prop highlighted_alt_squares, :integer, required: true
-
-  defp is_selected(selected_squares, square_index), do: Bitboard.is_set(selected_squares, square_index)
-
-  defp is_highlighted(highlighted_squares, square_index), do: Bitboard.is_set(highlighted_squares, square_index)
-
-  defp is_ctrl_highlighted(highlighted_ctrl_squares, square_index), do: Bitboard.is_set(highlighted_ctrl_squares, square_index)
-
-  defp is_alt_highlighted(highlighted_alt_squares, square_index), do: Bitboard.is_set(highlighted_alt_squares, square_index)
+  prop is_selected, :boolean, required: true
+  prop is_ctrl_highlighted, :boolean, required: true
+  prop is_alt_highlighted, :boolean, required: true
 
   defp is_light(square_index), do: Square.is_light(square_index)
 

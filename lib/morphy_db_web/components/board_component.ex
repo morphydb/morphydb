@@ -8,11 +8,11 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   alias MorphyDbWeb.Components.SquareComponent
 
-  data selected_squares, :integer, default: Bitboard.empty()
-  data highlighted_squares, :integer, default: Bitboard.empty()
-  data highlighted_alt_squares, :integer, default: Bitboard.empty()
-  data highlighted_ctrl_squares, :integer, default: Bitboard.empty()
+  data selected_squares, :integer, default: Bitboard.empty
+  data highlighted_alt_squares, :integer, default: Bitboard.empty
+  data highlighted_ctrl_squares, :integer, default: Bitboard.empty
   data position, :struct
+
   prop fen, :string, required: true
 
   def update(assigns, socket) do
@@ -31,70 +31,77 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   def handle_event(
         "square_click",
-        %{"square_index" => square_index},
+        %{"square_index" => square_index_string, "alt_key" => false, "ctrl_key" => false},
         socket
       ) do
-    selected_square =
-      square_index
-      |> String.to_integer()
-      |> (&Square.toggle(Bitboard.empty(), &1)).()
 
-    {:noreply,
-     socket
-     |> update(
-       :selected_squares,
-       &if(&1 == selected_square or has_highlighted_squares(socket), do: 0, else: selected_square)
-     )
-     |> assign(:highlighted_squares, 0)
-     |> assign(:highlighted_alt_squares, 0)
-     |> assign(:highlighted_ctrl_squares, 0)}
+    square_index = String.to_integer(square_index_string)
+
+    case has_highlighted_squares(socket) do
+      true ->
+        {:noreply,
+          socket
+          |> assign(:highlighted_alt_squares, Bitboard.empty)
+          |> assign(:selected_squares, Bitboard.empty)
+          |> assign(:highlighted_ctrl_squares, Bitboard.empty)
+        }
+      false ->
+        {:noreply,
+          socket
+          |> assign(:selected_squares, Square.toggle(Bitboard.empty, square_index))
+        }
+    end
   end
 
   def handle_event(
-        "square_right_click",
-        %{"square_index" => square_index, "alt_key" => false, "ctrl_key" => false},
+        "square_click",
+        %{"square_index" => square_index_string, "alt_key" => true, "ctrl_key" => false},
         socket
       ) do
+    square_index = String.to_integer(square_index_string)
+
     {:noreply,
      socket
-     |> assign(:selected_squares, 0)
-     |> update(:highlighted_squares, &Square.toggle(&1, String.to_integer(square_index)))}
+     |> update(:highlighted_alt_squares, &Square.toggle(&1, square_index))
+     |> update(:selected_squares, &Square.deselect(&1, square_index))
+     |> update(:highlighted_ctrl_squares, &Square.deselect(&1, square_index))
+    }
   end
 
   def handle_event(
-        "square_right_click",
-        %{"square_index" => square_index, "alt_key" => true},
+        "square_click",
+        %{"square_index" => square_index_string, "alt_key" => false, "ctrl_key" => true},
         socket
       ) do
+    square_index = String.to_integer(square_index_string)
+
     {:noreply,
      socket
-     |> assign(:selected_squares, 0)
-     |> update(:highlighted_alt_squares, &Square.toggle(&1, String.to_integer(square_index)))}
+     |> update(:highlighted_ctrl_squares, &Square.toggle(&1, square_index))
+     |> update(:selected_squares, &Square.deselect(&1, square_index))
+     |> update(:highlighted_alt_squares, &Square.deselect(&1, square_index))
+    }
   end
 
   def handle_event(
-        "square_right_click",
-        %{"square_index" => square_index, "alt_key" => false, "ctrl_key" => true},
+        "square_click",
+        %{"alt_key" => true, "ctrl_key" => true},
         socket
       ) do
-    {:noreply,
-     socket
-     |> assign(:selected_squares, 0)
-     |> update(:highlighted_ctrl_squares, &Square.toggle(&1, String.to_integer(square_index)))}
+    {:noreply, socket}
   end
 
   def handle_event("deselect", _params, socket) do
     {:noreply,
      socket
      |> assign(:selected_squares, 0)
-     |> assign(:highlighted_squares, 0)
      |> assign(:highlighted_alt_squares, 0)
      |> assign(:highlighted_ctrl_squares, 0)}
   end
 
   defp has_highlighted_squares(socket) do
     socket.assigns
-    |> Map.take([:highlighted_squares, :highlighted_alt_squares, :highlighted_ctrl_squares])
+    |> Map.take([:highlighted_alt_squares, :highlighted_ctrl_squares])
     |> Map.values()
     |> Enum.sum() >
       0

@@ -64,4 +64,22 @@ defmodule MorphyDb.Square do
   def toggle(bitboard, square_index) when square_index in 0..63 do
     Bitboard.toggle(bitboard, square_index)
   end
+
+  @doc ~S"""
+  Deselects the bit located at square_index
+
+  ## Examples
+
+      iex> 0 |> MorphyDb.Square.deselect(0)
+      0
+
+      iex> 0 |> MorphyDb.Square.deselect(0) |> MorphyDb.Square.deselect(0)
+      0
+
+      iex> 0 |> MorphyDb.Square.toggle(8) |> MorphyDb.Square.deselect(8)
+      0
+  """
+  def deselect(bitboard, square_index) when square_index in 0..63 do
+    Bitboard.unset(bitboard, square_index)
+  end
 end
