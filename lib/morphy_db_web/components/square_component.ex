@@ -3,12 +3,13 @@ defmodule MorphyDbWeb.Components.SquareComponent do
   alias MorphyDb.Square
   alias MorphyDbWeb.Components.PieceComponent
 
-  prop click, :event, required: false
+  prop click, :event, required: true
+
   prop square, :map, required: true
 
   prop is_selected, :boolean, required: true
-  prop is_ctrl_highlighted, :boolean, required: true
-  prop is_alt_highlighted, :boolean, required: true
+  prop is_selected_with_ctrl, :boolean, required: true
+  prop is_selected_with_alt, :boolean, required: true
 
   defp is_light(square_index), do: Square.is_light(square_index)
 

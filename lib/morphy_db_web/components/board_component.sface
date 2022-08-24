@@ -1,6 +1,8 @@
 <div
   class="grid grid-cols-8 grid-rows-8 aspect-square"
   :on-click-away="deselect"
+  :on-keyup="deselect" phx-key="Escape"
+  tabindex="0"
 >
   {#for square <- @squares}
     <SquareComponent
@@ -8,8 +10,8 @@
       {=square}
       click="square_click"
       is_selected={Bitboard.is_set(@selected_squares, square.index)}
-      is_ctrl_highlighted={Bitboard.is_set(@highlighted_ctrl_squares, square.index)}
-      is_alt_highlighted={Bitboard.is_set(@highlighted_alt_squares, square.index)}
+      is_selected_with_ctrl={Bitboard.is_set(@selected_ctrl_squares, square.index)}
+      is_selected_with_alt={Bitboard.is_set(@selected_alt_squares, square.index)}
     />
   {/for}
 </div>
