@@ -5,7 +5,7 @@ defmodule MorphyDb.MixProject do
     [
       app: :morphy_db,
       version: "0.1.0",
-      elixir: "~> 1.12",
+      elixir: "~> 1.13.4",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: Mix.compilers() ++ [:surface],
       start_permanent: Mix.env() == :prod,
@@ -51,7 +51,7 @@ defmodule MorphyDb.MixProject do
       {:surface_formatter, "~> 0.7.5"},
       {:surface_catalogue, "~> 0.4.0"},
       {:set_locale, "~> 0.2.9"},
-      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.1.8", runtime: Mix.env() == :dev},
       {:elixir_sense, github: "elixir-lsp/elixir_sense"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:nimble_parsec, "~> 1.0"}

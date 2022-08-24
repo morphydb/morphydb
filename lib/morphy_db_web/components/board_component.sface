@@ -2,18 +2,15 @@
   class="grid grid-cols-8 grid-rows-8 aspect-square"
   :on-click-away="deselect"
 >
-  {#for rank <- 7..0}
-    {#for file <- 0..7}
-      <SquareComponent
-            square_index={8 * rank + file}
-            click="square_click"
-            is_selected={Enum.at(@position.pieces, 8 * rank + file) && Square.is_selected(@selected_squares, 8 * rank + file)}
-            is_highlighted={Square.is_selected(@highlighted_squares, 8 * rank + file)}
-            is_ctrl_highlighted={Square.is_selected(@highlighted_ctrl_squares, 8 * rank + file)}
-            is_alt_highlighted={Square.is_selected(@highlighted_alt_squares, 8 * rank + file)}
-          >
-            <PieceComponent :if={Enum.at(@position.pieces, 8 * rank + file)} square_index={8 * rank + file} piece={Enum.at(@position.pieces, 8 * rank + file)} />
-          </SquareComponent>
-    {/for}
+  {#for square <- @squares}
+    <SquareComponent
+          {=square}
+          click="square_click"
+          {=@selected_squares}
+          {=@highlighted_squares}
+          {=@highlighted_ctrl_squares}
+          {=@highlighted_alt_squares}
+        >
+        </SquareComponent>
   {/for}
 </div>

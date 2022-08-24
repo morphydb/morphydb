@@ -1,19 +1,43 @@
 defmodule MorphyDb.Position do
-  defstruct [
-    :fen,
-    :pieces,
-    :side_to_move,
-    :en_passant,
-    :castling_ability,
-    :half_move_counter,
-    :full_move_counter
-  ]
-
+  require MorphyDb.Bitboard
+  alias  MorphyDb.Bitboard
   alias MorphyDb.FenParser
 
-  def parse(fen) do
+  defstruct [
+    :fen,
+    :side_to_move,
+    :en_passant,
+    :half_move_counter,
+    :full_move_counter,
+    castling_ability: [],
+    pieces: %{
+      {:w, :p} => Bitboard.empty,
+      {:w, :r} => Bitboard.empty,
+      {:w, :n} => Bitboard.empty,
+      {:w, :b} => Bitboard.empty,
+      {:w, :k} => Bitboard.empty,
+      {:w, :q} => Bitboard.empty,
+      {:b, :p} => Bitboard.empty,
+      {:b, :r} => Bitboard.empty,
+      {:b, :n} => Bitboard.empty,
+      {:b, :b} => Bitboard.empty,
+      {:b, :k} => Bitboard.empty,
+      {:b, :q} => Bitboard.empty
+    },
+    rank_index: 7,
+    file_index: 0
+  ]
+
+  def parse(fen) when is_bitstring(fen) do
     {:ok, _, _, position, _, _} = FenParser.fen(fen |> String.trim)
 
     position
+  end
+
+  def piece(%MorphyDb.Position{pieces: pieces}, square_index) when square_index in 0..63 do
+    case Enum.filter(pieces, fn({_piece, bitboard}) -> Bitboard.is_set(bitboard, square_index) end) do
+      [{k, _v}] -> k
+      [] -> nil
+    end
   end
 end

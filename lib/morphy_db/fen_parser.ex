@@ -1,12 +1,11 @@
 defmodule MorphyDb.FenParser do
   alias MorphyDb.Position
-  alias MorphyDb.Piece
+  alias MorphyDb.Bitboard
 
   import NimbleParsec
 
   initialize = empty() |> post_traverse(:initializer)
   whitespace = string(" ") |> ignore()
-  file = ascii_char([?a..?h])
   black_piece = ascii_char([?p, ?n, ?b, ?r, ?q, ?k])
   white_piece = ascii_char([?P, ?N, ?B, ?R, ?Q, ?K])
 
@@ -19,6 +18,7 @@ defmodule MorphyDb.FenParser do
     |> post_traverse(:duplicate_nil_piece)
 
   piece = choice([white_piece, black_piece])
+  |> post_traverse(:piece_placement)
 
   rank =
     choice([
@@ -28,16 +28,14 @@ defmodule MorphyDb.FenParser do
       |> times(min: 1, max: 8),
       digit_8
     ])
-    |> post_traverse(:piece_placement)
 
   piece_placement =
     rank
-    |> concat(ignore(string("/")))
+    |> concat(ignore(ascii_char([?/])))
     |> times(7)
     |> concat(rank)
 
-  ep_rank = ascii_char([?3, ?6])
-  ep_square = file |> concat(ep_rank)
+  ep_square = ascii_char([?a..?h]) |> concat(ascii_char([?3, ?6]))
 
   en_passant_target_square =
     choice([ascii_char([?-]), ep_square])
@@ -49,8 +47,8 @@ defmodule MorphyDb.FenParser do
 
   castling_ability =
     ascii_char([?K, ?Q, ?k, ?q, ?-])
-    |> times(min: 1, max: 4)
     |> post_traverse(:castling_ability)
+    |> times(min: 1, max: 4)
 
   half_move_counter = integer(min: 1) |> post_traverse(:half_move_counter)
   full_move_counter = integer(min: 1) |> post_traverse(:full_move_counter)
@@ -72,49 +70,47 @@ defmodule MorphyDb.FenParser do
         |> concat(full_move_counter)
       )
     )
+    |> eos()
 
-  defparsec(:fen, concat(initialize, position) |> eos())
-
-  defp map_piece(?K), do: %Piece{color: :white, piece: :king}
-  defp map_piece(?Q), do: %Piece{color: :white, piece: :queen}
-  defp map_piece(?R), do: %Piece{color: :white, piece: :rook}
-  defp map_piece(?B), do: %Piece{color: :white, piece: :bishop}
-  defp map_piece(?N), do: %Piece{color: :white, piece: :knight}
-  defp map_piece(?P), do: %Piece{color: :white, piece: :pawn}
-
-  defp map_piece(?k), do: %Piece{color: :black, piece: :king}
-  defp map_piece(?q), do: %Piece{color: :black, piece: :queen}
-  defp map_piece(?r), do: %Piece{color: :black, piece: :rook}
-  defp map_piece(?b), do: %Piece{color: :black, piece: :bishop}
-  defp map_piece(?n), do: %Piece{color: :black, piece: :knight}
-  defp map_piece(?p), do: %Piece{color: :black, piece: :pawn}
-
-  defp map_piece(nil), do: nil
-
-  defp duplicate_nil_piece(_rest, args, context, _line, _offset) do
-    amount = String.to_integer(to_string(args))
-    result = List.duplicate(nil, amount)
-    {result, context}
-  end
+  defparsec(:fen, concat(initialize, position))
 
   defp initializer(fen, _value, _context = %{}, _, _) do
     {[], %Position{fen: fen}}
   end
 
-  defp piece_placement(_, value, context = %Position{pieces: nil}, _, _) do
-    {[], %{context | pieces: value |> Enum.map(&map_piece/1) |> Enum.reverse}}
+  defp next_square(rank_index, file_index), do: next_square(rank_index, file_index, 1)
+  defp next_square(rank_index, file_index, amount) do
+    square_index = 8 * rank_index + file_index
+
+    next_f = file_index + amount
+    next_r = rank_index - div(next_f, 8)
+
+    %{:current => square_index, :rank => next_r, :file => rem(next_f, 8)}
   end
 
-  defp piece_placement(_, value, context = %Position{pieces: pieces}, _, _) do
-    {[], %{context | pieces: (value |> Enum.map(&map_piece/1) |> Enum.reverse) ++ pieces}}
+  defp duplicate_nil_piece(_rest, value, context = %Position{rank_index: rank_index, file_index: file_index}, _line, _offset) do
+    amount = String.to_integer(to_string(value))
+    square = next_square(rank_index, file_index, amount)
+
+    {[], %{context | rank_index: square.rank, file_index: square.file}}
+  end
+
+  defp piece_placement(_, value, context = %Position{pieces: pieces, rank_index: rank_index, file_index: file_index}, _line, _offset) do
+    square = next_square(rank_index, file_index)
+
+    piece = value |> map_piece()
+    bitboard = pieces[piece] |> Bitboard.set_bit(square.current)
+    updated = %{pieces | piece => bitboard}
+
+    {[], %{context | pieces: updated, rank_index: square.rank, file_index: square.file}}
   end
 
   defp side_to_move(_, [?b], context = %Position{}, _, _) do
-    {[], %{context | side_to_move: :black}}
+    {[], %{context | side_to_move: :b}}
   end
 
   defp side_to_move(_, [?w], context = %Position{}, _, _) do
-    {[], %{context | side_to_move: :white}}
+    {[], %{context | side_to_move: :w}}
   end
 
   defp en_passant(_, '-', context = %Position{}, _, _) do
@@ -125,12 +121,11 @@ defmodule MorphyDb.FenParser do
     {[], %{context | en_passant: Enum.reverse(value)}}
   end
 
-  defp castling_ability(_rest, '-', context = %Position{}, _, _) do
-    {[], %{context | castling_ability: nil}}
-  end
+  defp castling_ability(_rest, value, context = %Position{castling_ability: castling_ability}, _, _) do
+    side = value |> Enum.map(&map_castling_ability/1)
+    updated = [castling_ability | side]
 
-  defp castling_ability(_rest, value, context = %Position{}, _, _) do
-    {[], %{context | castling_ability: Enum.map(value, &map_piece(&1))}}
+    {[], %{context | castling_ability: updated}}
   end
 
   defp half_move_counter(_rest, [value], context = %Position{}, _, _) do
@@ -140,4 +135,24 @@ defmodule MorphyDb.FenParser do
   defp full_move_counter(_rest, [value], context = %Position{}, _, _) do
     {[], %{context | full_move_counter: value}}
   end
+
+  defp map_castling_ability(?K), do: {:w, :k}
+  defp map_castling_ability(?Q), do: {:w, :q}
+  defp map_castling_ability(?k), do: {:b, :k}
+  defp map_castling_ability(?q), do: {:b, :q}
+  defp map_castling_ability(?-), do: nil
+
+  defp map_piece('K'), do: {:w, :k}
+  defp map_piece('Q'), do: {:w, :q}
+  defp map_piece('R'), do: {:w, :r}
+  defp map_piece('B'), do: {:w, :b}
+  defp map_piece('N'), do: {:w, :n}
+  defp map_piece('P'), do: {:w, :p}
+
+  defp map_piece('k'), do: {:b, :k}
+  defp map_piece('q'), do: {:b, :q}
+  defp map_piece('r'), do: {:b, :r}
+  defp map_piece('b'), do: {:b, :b}
+  defp map_piece('n'), do: {:b, :n}
+  defp map_piece('p'), do: {:b, :p}
 end

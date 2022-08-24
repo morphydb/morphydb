@@ -1,28 +1,27 @@
 <div
-  id={"square-#{@square_index}"}
+  id={"square-#{@square.index}"}
   class={
     "square",
     "relative",
     "bg-gradient-to-br",
-    "from-light": is_light(@square_index),
-    "to-light/75": is_light(@square_index),
-    "from-dark": is_dark(@square_index),
-    "to-dark/75": is_dark(@square_index)
+    "from-light": is_light(@square.index),
+    "to-light/75": is_light(@square.index),
+    "from-dark": is_dark(@square.index),
+    "to-dark/75": is_dark(@square.index)
   }
   :on-click={@click}
-  phx-value-square_index={@square_index}
+  phx-value-square_index={@square.index}
   :hook="Square"
-  data-square-index={@square_index}
+  data-square-index={@square.index}
 >
   <div class={
     "absolute",
     "inset-0",
-    "bg-yellow-400 bg-blend-hue": @is_selected,
-    "bg-blue-600 bg-blend-hue": @is_highlighted,
-    "bg-green-600 bg-blend-hue": @is_ctrl_highlighted,
-    "bg-red-600 bg-blend-hue": @is_alt_highlighted
+    "backdrop-brightness-110": is_selected(@selected_squares, @square.index),
+    "bg-blue-600 bg-blend-hue": is_highlighted(@highlighted_squares, @square.index),
+    "bg-green-600 bg-blend-hue": is_ctrl_highlighted(@highlighted_ctrl_squares, @square.index),
+    "bg-red-600 bg-blend-hue": is_alt_highlighted(@highlighted_alt_squares, @square.index)
   }>
-  {@square_index}
-    <#slot />
+      <PieceComponent :if={@square.piece} square_index={@square.index} piece={@square.piece} />
   </div>
 </div>

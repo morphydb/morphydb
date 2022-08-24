@@ -7,7 +7,6 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   alias MorphyDb.Position
 
   alias MorphyDbWeb.Components.SquareComponent
-  alias MorphyDbWeb.Components.PieceComponent
 
   data selected_squares, :integer, default: Bitboard.empty()
   data highlighted_squares, :integer, default: Bitboard.empty()
@@ -18,7 +17,16 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   def update(assigns, socket) do
     position = Position.parse(assigns.fen)
-    {:ok, assign(socket, :position, position)}
+
+    squares =
+      (for rank <- 7..0, file <- 0..7, do: 8 * rank + file)
+      |> Enum.map(fn square_index -> %{index: square_index, piece: Position.piece(position, square_index)} end)
+
+    {:ok,
+      socket
+      |> assign(:squares, squares)
+      |> assign(:pieces, position.pieces)
+    }
   end
 
   def handle_event(

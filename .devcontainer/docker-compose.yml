@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VARIANT: "1.12.3"
+        VARIANT: "1.13-otp-25"
         PHOENIX_VERSION: "1.6.11"
         NODE_VERSION: "16"
 

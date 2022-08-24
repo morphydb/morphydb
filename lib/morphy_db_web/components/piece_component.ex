@@ -1,21 +1,20 @@
 defmodule MorphyDbWeb.Components.PieceComponent do
   use MorphyDbWeb, :surface_component
-  alias MorphyDb.Piece
 
   prop square_index, :integer, required: true
   prop piece, :struct, required: true
 
-  defp piece_image(%Piece{color: color, piece: piece}) do
-    "/images/#{translate_color(color)}_#{translate_piece(piece)}.svg"
+  defp piece_image({c, p}) when is_atom(c) and is_atom(p) do
+    "/images/#{translate_color(c)}_#{translate_piece(p)}.svg"
   end
 
-  defp translate_color(:black), do: "b"
-  defp translate_color(:white), do: "w"
+  defp translate_color(:b), do: "b"
+  defp translate_color(:w), do: "w"
 
-  defp translate_piece(:king), do: "k"
-  defp translate_piece(:queen), do: "q"
-  defp translate_piece(:rook), do: "r"
-  defp translate_piece(:bishop), do: "b"
-  defp translate_piece(:knight), do: "n"
-  defp translate_piece(:pawn), do: "p"
+  defp translate_piece(:k), do: "k"
+  defp translate_piece(:q), do: "q"
+  defp translate_piece(:r), do: "r"
+  defp translate_piece(:b), do: "b"
+  defp translate_piece(:n), do: "n"
+  defp translate_piece(:p), do: "p"
 end

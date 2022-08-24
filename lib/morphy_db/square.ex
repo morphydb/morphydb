@@ -45,27 +45,6 @@ defmodule MorphyDb.Square do
   end
 
   @doc ~S"""
-  Returns true if the bit located at square_index is selected
-
-  ## Examples
-
-      iex> MorphyDb.Square.is_selected(0, 0)
-      false
-
-      iex> 0 |> MorphyDb.Square.toggle(0) |> MorphyDb.Square.is_selected(0)
-      true
-
-      iex> MorphyDb.Square.is_selected(0, 63)
-      false
-
-      iex> 0 |> MorphyDb.Square.toggle(63) |> MorphyDb.Square.is_selected(63)
-      true
-  """
-  def is_selected(bitboard, square_index) when square_index in 0..63 do
-    Bitboard.is_set(bitboard, square_index)
-  end
-
-  @doc ~S"""
   Toggles the bit located at square_index
 
   ## Examples
