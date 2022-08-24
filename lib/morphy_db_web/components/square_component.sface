@@ -19,6 +19,6 @@
     "bg-green-600 bg-blend-hue bg-opacity-75": @is_selected_with_ctrl,
     "bg-red-600 bg-blend-hue bg-opacity-75": @is_selected_with_alt
   }>
-      <PieceComponent :if={@square.piece} square_index={@square.index} piece={@square.piece} id={"piece-#{@square.index}"} />
+      <PieceComponent square_index={@square.index} piece={@square.piece} id={"piece-#{@square.index}"} />
   </div>
 </div>

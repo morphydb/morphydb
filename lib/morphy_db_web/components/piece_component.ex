@@ -8,6 +8,10 @@ defmodule MorphyDbWeb.Components.PieceComponent do
     "/images/#{translate_color(c)}_#{translate_piece(p)}.svg"
   end
 
+  defp piece_image(nil) do
+    "images/none.svg"
+  end
+
   defp translate_color(:b), do: "b"
   defp translate_color(:w), do: "w"
 
