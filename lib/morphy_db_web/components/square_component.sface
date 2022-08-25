@@ -17,7 +17,8 @@
     "inset-0",
     "backdrop-brightness-110": @is_selected,
     "bg-green-600 bg-blend-hue bg-opacity-75": @is_selected_with_ctrl,
-    "bg-red-600 bg-blend-hue bg-opacity-75": @is_selected_with_alt
+    "bg-red-600 bg-blend-hue bg-opacity-75": @is_selected_with_alt,
+    "bg-orange-500 bg-opacity-75": @is_attacked
   }>
       <PieceComponent square_index={@square.index} piece={@square.piece} id={"piece-#{@square.index}"} />
   </div>

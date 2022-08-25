@@ -1,7 +1,6 @@
 defmodule MorphyDb.BitboardTest do
   use ExUnit.Case, async: true
 
-  require MorphyDb.Bitboard
   alias MorphyDb.Bitboard
 
   describe "is_set" do
