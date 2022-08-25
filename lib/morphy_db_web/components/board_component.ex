@@ -8,9 +8,9 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   alias MorphyDbWeb.Components.SquareComponent
 
-  data selected_squares, :integer, default: Bitboard.empty
-  data selected_alt_squares, :integer, default: Bitboard.empty
-  data selected_ctrl_squares, :integer, default: Bitboard.empty
+  data selected_squares, :integer, default: Bitboard.empty()
+  data selected_alt_squares, :integer, default: Bitboard.empty()
+  data selected_ctrl_squares, :integer, default: Bitboard.empty()
   data position, :struct
 
   prop fen, :string, required: true
@@ -19,14 +19,14 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     position = Position.parse(assigns.fen)
 
     squares =
-      (for rank <- 7..0, file <- 0..7, do: 8 * rank + file)
-      |> Enum.map(fn square_index -> %{index: square_index, piece: Position.piece(position, square_index)} end)
+      for(rank <- 7..0, file <- 0..7, do: 8 * rank + file)
+      |> generate_squares(position)
 
     {:ok,
-      socket
-      |> assign(:squares, squares)
-      |> assign(:pieces, position.pieces)
-    }
+     socket
+     |> assign(:squares, squares)
+     |> assign(:position, position)
+     |> assign(:white_bottom, true)}
   end
 
   def handle_event(
@@ -34,26 +34,30 @@ defmodule MorphyDbWeb.Components.BoardComponent do
         %{"square_index" => square_index_string, "alt_key" => false, "ctrl_key" => false},
         socket
       ) do
-
     square_index = String.to_integer(square_index_string)
 
     case has_selected_squares(socket) do
       true ->
         {:noreply,
-          socket
-          |> assign(:selected_alt_squares, Bitboard.empty)
-          |> assign(:selected_squares, Bitboard.empty)
-          |> assign(:selected_ctrl_squares, Bitboard.empty)
-        }
+         socket
+         |> assign(:selected_alt_squares, Bitboard.empty())
+         |> assign(:selected_squares, Bitboard.empty())
+         |> assign(:selected_ctrl_squares, Bitboard.empty())}
+
       false ->
         selected_square =
           square_index
           |> (&Square.toggle(Bitboard.empty(), &1)).()
 
         {:noreply,
-          socket
-          |> update(:selected_squares, &if(&1 == selected_square or has_selected_squares(socket), do: Bitboard.empty, else: selected_square))
-        }
+         socket
+         |> update(
+           :selected_squares,
+           &if(&1 == selected_square or has_selected_squares(socket),
+             do: Bitboard.empty(),
+             else: selected_square
+           )
+         )}
     end
   end
 
@@ -68,8 +72,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
      socket
      |> update(:selected_alt_squares, &Square.toggle(&1, square_index))
      |> update(:selected_squares, &Square.deselect(&1, square_index))
-     |> update(:selected_ctrl_squares, &Square.deselect(&1, square_index))
-    }
+     |> update(:selected_ctrl_squares, &Square.deselect(&1, square_index))}
   end
 
   def handle_event(
@@ -83,8 +86,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
      socket
      |> update(:selected_ctrl_squares, &Square.toggle(&1, square_index))
      |> update(:selected_squares, &Square.deselect(&1, square_index))
-     |> update(:selected_alt_squares, &Square.deselect(&1, square_index))
-    }
+     |> update(:selected_alt_squares, &Square.deselect(&1, square_index))}
   end
 
   def handle_event(
@@ -103,11 +105,31 @@ defmodule MorphyDbWeb.Components.BoardComponent do
      |> assign(:selected_ctrl_squares, 0)}
   end
 
+  def handle_event("flip", _params, socket) do
+    white_bottom = not socket.assigns.white_bottom
+
+    squares = if white_bottom, do: for(rank <- 7..0, file <- 0..7, do: 8 * rank + file), else: for rank <- 0..7, file <- 7..0, do: 8 * rank + file
+
+    position = socket.assigns.position
+
+    {:noreply,
+     socket
+     |> assign(:white_bottom, white_bottom)
+     |> assign(:squares, squares |> generate_squares(position))}
+  end
+
   defp has_selected_squares(socket) do
     socket.assigns
     |> Map.take([:selected_alt_squares, :selected_ctrl_squares])
     |> Map.values()
     |> Enum.sum() >
       0
+  end
+
+  defp generate_squares(squares, position) do
+    squares
+    |> Enum.map(fn square_index ->
+      %{index: square_index, piece: Position.piece(position, square_index)}
+    end)
   end
 end

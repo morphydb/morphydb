@@ -1,7 +1,8 @@
 <div
   class="grid grid-cols-8 grid-rows-8 aspect-square"
   :on-click-away="deselect"
-  :on-keyup="deselect" phx-key="Escape"
+  :hook="Board"
+  
   tabindex="0"
 >
   {#for square <- @squares}
