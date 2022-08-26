@@ -1,11 +1,7 @@
-defmodule MorphyDb.Square.Guards do
-  defguard is_square(square_index) when square_index in 0..63
-end
-
 defmodule MorphyDb.Square do
   alias MorphyDb.Bitboard
 
-  import MorphyDb.Square.Guards
+  import MorphyDb.Guards
 
   @spec to_square_index(number, number) :: number
   def to_square_index(file_index, rank_index), do: 8 * rank_index + file_index

@@ -1,6 +1,6 @@
 defmodule MorphyDb.Bitboard do
   use Bitwise
-  import MorphyDb.Square.Guards
+  import MorphyDb.Guards
 
   def empty, do: 0
   def universal, do: 0xFFFFFFFFFFFFFFFF

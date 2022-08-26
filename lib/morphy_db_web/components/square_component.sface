@@ -16,14 +16,14 @@
     "absolute",
     "inset-0",
     "backdrop-brightness-110": @is_selected,
-    "backdrop-brightness-75": @is_attacked,
+    "backdrop-brightness-75": @is_move,
     "bg-green-600 bg-blend-hue bg-opacity-75": @is_selected_with_ctrl,
     "bg-red-600 bg-blend-hue bg-opacity-75": @is_selected_with_alt
   }>
     <div class={
       "absolute",
       "inset-0",
-      "rounded-full border-8 border-slate-500": false
+      "rounded-full border-8 border-slate-500": @is_attacked
       }>
     </div>
       <PieceComponent square_index={@square.index} piece={@square.piece} id={"piece-#{@square.index}"} />

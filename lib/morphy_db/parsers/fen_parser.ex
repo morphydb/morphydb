@@ -1,4 +1,4 @@
-defmodule MorphyDb.FenParser do
+defmodule MorphyDb.Parsers.FenParser do
   alias MorphyDb.Position
   alias MorphyDb.Bitboard
 
@@ -95,14 +95,19 @@ defmodule MorphyDb.FenParser do
     {[], %{context | rank_index: square.rank, file_index: square.file}}
   end
 
-  defp piece_placement(_, value, context = %Position{pieces: pieces, rank_index: rank_index, file_index: file_index}, _line, _offset) do
+  defp piece_placement(_, value, context = %Position{pieces: pieces, all_pieces: all_pieces, rank_index: rank_index, file_index: file_index}, _line, _offset) do
     square = next_square(rank_index, file_index)
 
     piece = value |> map_piece()
     bitboard = pieces[piece] |> Bitboard.set_bit(square.current)
-    updated = %{pieces | piece => bitboard}
+    {color, _} = piece
 
-    {[], %{context | pieces: updated, rank_index: square.rank, file_index: square.file}}
+    color_bitboard = all_pieces[color] |> Bitboard.set_bit(square.current)
+
+    updated_pieces = %{pieces | piece => bitboard}
+    updated_all_pieces = %{all_pieces | color => color_bitboard}
+
+    {[], %{context | pieces: updated_pieces, all_pieces: updated_all_pieces, rank_index: square.rank, file_index: square.file}}
   end
 
   defp side_to_move(_, [?b], context = %Position{}, _, _) do

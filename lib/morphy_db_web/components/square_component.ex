@@ -10,6 +10,7 @@ defmodule MorphyDbWeb.Components.SquareComponent do
   prop is_selected, :boolean, required: true
   prop is_selected_with_ctrl, :boolean, required: true
   prop is_selected_with_alt, :boolean, required: true
+  prop is_move, :boolean, required: true
   prop is_attacked, :boolean, required: true
 
   defp is_light(square_index), do: Square.is_light(square_index)

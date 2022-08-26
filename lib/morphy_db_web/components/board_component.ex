@@ -1,7 +1,7 @@
 defmodule MorphyDbWeb.Components.BoardComponent do
   use MorphyDbWeb, :surface_live_component
 
-  import MorphyDb.Square.Guards
+  import MorphyDb.Guards
 
   alias MorphyDb.Bitboard
   alias MorphyDb.Square
@@ -12,6 +12,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   data selected_square, :integer, default: Bitboard.empty()
   data selected_alt_squares, :integer, default: Bitboard.empty()
   data selected_ctrl_squares, :integer, default: Bitboard.empty()
+  data move_squares, :integer, default: Bitboard.empty()
   data attacked_squares, :integer, default: Bitboard.empty()
   data position, :struct
 
@@ -121,17 +122,20 @@ defmodule MorphyDbWeb.Components.BoardComponent do
       do:
         socket
         |> assign(:selected_square, Bitboard.empty())
-        |> clear_attacked_squares(),
+        |> clear_attacked_squares()
+        |> clear_move_squares(),
       else:
         socket
         |> assign(:selected_square, selected_square)
         |> assign_attacked_squares(square_index)
+        |> assign_move_squares(square_index)
   end
 
-  defp assign_attacked_squares(socket, square_index) when is_square(square_index) do
-    piece = Position.piece(socket.assigns.position, square_index)
+  defp assign_move_squares(socket, square_index) when is_square(square_index) do
+    position = socket.assigns.position
+    piece = Position.piece(position, square_index)
 
-    attacked_squares =
+    move_squares =
       case piece do
         {_, :k} -> MorphyDb.Pieces.King.move_mask(square_index)
         {_, :q} -> MorphyDb.Pieces.Queen.move_mask(square_index)
@@ -139,6 +143,24 @@ defmodule MorphyDbWeb.Components.BoardComponent do
         {_, :b} -> MorphyDb.Pieces.Bishop.move_mask(square_index)
         {_, :n} -> MorphyDb.Pieces.Knight.move_mask(square_index)
         {color, :p} -> MorphyDb.Pieces.Pawn.move_mask(square_index, color)
+        nil -> Bitboard.empty()
+      end
+
+    socket |> assign(:move_squares, move_squares)
+  end
+
+  defp assign_attacked_squares(socket, square_index) when is_square(square_index) do
+    position = socket.assigns.position
+    piece = Position.piece(position, square_index)
+
+    attacked_squares =
+      case piece do
+        {color, :k} -> MorphyDb.Pieces.King.attack_mask(position, square_index, color)
+        {color, :q} -> MorphyDb.Pieces.Queen.attack_mask(position, square_index, color)
+        {color, :r} -> MorphyDb.Pieces.Rook.attack_mask(position, square_index, color)
+        {color, :b} -> MorphyDb.Pieces.Bishop.attack_mask(position, square_index, color)
+        {color, :n} -> MorphyDb.Pieces.Knight.attack_mask(position, square_index, color)
+        {color, :p} -> MorphyDb.Pieces.Pawn.attack_mask(position, square_index, color)
         nil -> Bitboard.empty()
       end
 
@@ -151,9 +173,14 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     |> assign(:selected_alt_squares, Bitboard.empty())
     |> assign(:selected_ctrl_squares, Bitboard.empty())
     |> clear_attacked_squares
+    |> clear_move_squares
   end
 
   defp clear_attacked_squares(socket) do
     socket |> assign(:attacked_squares, Bitboard.empty())
+  end
+
+  defp clear_move_squares(socket) do
+    socket |> assign(:move_squares, Bitboard.empty())
   end
 end

@@ -1,7 +1,7 @@
 defmodule MorphyDb.Position do
   alias MorphyDb.Bitboard
-  alias MorphyDb.FenParser
-  import MorphyDb.Square.Guards
+  alias MorphyDb.Parsers.FenParser
+  import MorphyDb.Guards
 
   defstruct [
     :fen,
@@ -23,6 +23,10 @@ defmodule MorphyDb.Position do
       {:b, :b} => Bitboard.empty(),
       {:b, :k} => Bitboard.empty(),
       {:b, :q} => Bitboard.empty()
+    },
+    all_pieces: %{
+      :w => Bitboard.empty(),
+      :b => Bitboard.empty()
     },
     rank_index: 7,
     file_index: 0
