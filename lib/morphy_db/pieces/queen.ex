@@ -1,12 +1,14 @@
 defmodule MorphyDb.Pieces.Queen do
   import MorphyDb.Square.Guards
-  import MorphyDb.Pieces.Piece
+
+  alias MorphyDb.Pieces.Bishop
+  alias MorphyDb.Pieces.Rook
 
   alias MorphyDb.Bitboard
-  alias MorphyDb.Board
 
-  def attack_mask(square_index) when is_square(square_index) do
-    Bitboard.empty()
+  def move_mask(square_index) when is_square(square_index) do
+    Rook.move_mask(square_index)
+    |> Bitboard.union(Bishop.move_mask(square_index))
   end
 
 end

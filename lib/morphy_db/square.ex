@@ -10,6 +10,9 @@ defmodule MorphyDb.Square do
   @spec to_square_index(number, number) :: number
   def to_square_index(file_index, rank_index), do: 8 * rank_index + file_index
 
+  def from_square_index(square_index) when is_square(square_index),
+    do: {rem(square_index, 8), div(square_index, 8)}
+
   @doc ~S"""
   Returns true if the square is a light square
 

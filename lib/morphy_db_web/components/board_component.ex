@@ -133,12 +133,12 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
     attacked_squares =
       case piece do
-        {_, :k} -> MorphyDb.Pieces.King.attack_mask(square_index)
-        {_, :q} -> MorphyDb.Pieces.Queen.attack_mask(square_index)
-        {_, :r} -> MorphyDb.Pieces.Rook.attack_mask(square_index)
-        {_, :b} -> MorphyDb.Pieces.Bishop.attack_mask(square_index)
-        {_, :n} -> MorphyDb.Pieces.Knight.attack_mask(square_index)
-        {color, :p} -> MorphyDb.Pieces.Pawn.attack_mask(square_index, color)
+        {_, :k} -> MorphyDb.Pieces.King.move_mask(square_index)
+        {_, :q} -> MorphyDb.Pieces.Queen.move_mask(square_index)
+        {_, :r} -> MorphyDb.Pieces.Rook.move_mask(square_index)
+        {_, :b} -> MorphyDb.Pieces.Bishop.move_mask(square_index)
+        {_, :n} -> MorphyDb.Pieces.Knight.move_mask(square_index)
+        {color, :p} -> MorphyDb.Pieces.Pawn.move_mask(square_index, color)
         nil -> Bitboard.empty()
       end
 

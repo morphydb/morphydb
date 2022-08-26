@@ -5,18 +5,20 @@ defmodule MorphyDb.Pieces.Knight do
   alias MorphyDb.Bitboard
   alias MorphyDb.Board
 
-  def attack_mask(square_index) when is_square(square_index) do
+  def move_mask(square_index) when is_square(square_index) do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
-    |> calculate_attacks(bitboard |> Bitboard.shift_right(17), Board.h_file)
-    |> calculate_attacks(bitboard |> Bitboard.shift_right(15), Board.a_file)
-    |> calculate_attacks(bitboard |> Bitboard.shift_right(10), Board.g_file |> Bitboard.union(Board.h_file))
-    |> calculate_attacks(bitboard |> Bitboard.shift_right(6), Board.a_file |> Bitboard.union(Board.b_file))
+    |> calculate_attacks(bitboard |> Bitboard.shift_right(17), Board.file(7))
+    |> calculate_attacks(bitboard |> Bitboard.shift_right(15), Board.file(0))
+    |> calculate_attacks(bitboard |> Bitboard.shift_right(10), Board.file(6) |> Bitboard.union(Board.file(7)))
+    |> calculate_attacks(bitboard |> Bitboard.shift_right(6), Board.file(0) |> Bitboard.union(Board.file(1)))
 
-    |> calculate_attacks(bitboard |> Bitboard.shift_left(17), Board.a_file)
-    |> calculate_attacks(bitboard |> Bitboard.shift_left(15), Board.h_file)
-    |> calculate_attacks(bitboard |> Bitboard.shift_left(10), Board.a_file |> Bitboard.union(Board.b_file))
-    |> calculate_attacks(bitboard |> Bitboard.shift_left(6), Board.g_file |> Bitboard.union(Board.h_file))
+    |> calculate_attacks(bitboard |> Bitboard.shift_left(17), Board.file(0))
+    |> calculate_attacks(bitboard |> Bitboard.shift_left(15), Board.file(7))
+    |> calculate_attacks(bitboard |> Bitboard.shift_left(10), Board.file(0) |> Bitboard.union(Board.file(1)))
+    |> calculate_attacks(bitboard |> Bitboard.shift_left(6), Board.file(6) |> Bitboard.union(Board.file(7)))
+
+    |> Bitboard.unset(square_index)
   end
 end
