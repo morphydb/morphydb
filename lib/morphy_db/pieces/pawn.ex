@@ -7,7 +7,8 @@ defmodule MorphyDb.Pieces.Pawn do
   alias MorphyDb.Position
   alias MorphyDb.Square
 
-  def attack_mask(%Position{all_pieces: all_pieces}, square_index, color) when is_square(square_index) and is_side(color) do
+  def attack_mask(%Position{all_pieces: all_pieces}, square_index, color)
+      when is_square(square_index) and is_side(color) do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     case color do
@@ -25,7 +26,8 @@ defmodule MorphyDb.Pieces.Pawn do
     end
   end
 
-  def move_mask(square_index, side) when is_square(square_index) and is_side(side) do
+  def move_mask(position, square_index, side)
+      when is_square(square_index) and is_side(side) do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
     {_, rank_index} = Square.from_square_index(square_index)
 
@@ -34,13 +36,13 @@ defmodule MorphyDb.Pieces.Pawn do
         Bitboard.empty()
         |> calculate_attacks(bitboard |> Board.down())
         |> initial_square(bitboard, rank_index, :b)
-        |> Bitboard.unset(square_index)
+        |> Bitboard.relative_complement(position.all_pieces.all)
 
       :w ->
         Bitboard.empty()
         |> calculate_attacks(bitboard |> Board.up())
         |> initial_square(bitboard, rank_index, :w)
-        |> Bitboard.unset(square_index)
+        |> Bitboard.relative_complement(position.all_pieces.all)
     end
   end
 

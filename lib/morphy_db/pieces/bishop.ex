@@ -3,15 +3,22 @@ defmodule MorphyDb.Pieces.Bishop do
 
   alias MorphyDb.Bitboard
   alias MorphyDb.Board
-  alias MorphyDb.Position
   alias MorphyDb.Square
 
-  def attack_mask(%Position{all_pieces: all_pieces}, square_index, color) when is_square(square_index) and is_side(color) do
-    move_mask(square_index)
-    |> Bitboard.intersect(all_pieces[(if color === :w, do: :b, else: :w)])
+  def attack_mask(position, square_index, color) when is_square(square_index) and is_side(color) do
+    opponent = if color === :w, do: :b, else: :w
+
+    move_mask_internal(position, square_index)
+      |> Bitboard.intersect(position.all_pieces[opponent])
   end
 
-  def move_mask(square_index) when is_square(square_index) do
+  def move_mask(position, square_index, color) when is_square(square_index) do
+    move_mask_internal(position, square_index)
+      |> Bitboard.relative_complement(position.all_pieces.all)
+      |> Bitboard.union(attack_mask(position, square_index, color))
+  end
+
+  defp move_mask_internal(_position, square_index) when is_square(square_index) do
     {file_index, rank_index} = Square.from_square_index(square_index)
 
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
@@ -42,6 +49,5 @@ defmodule MorphyDb.Pieces.Bishop do
       |> Bitboard.union(tr)
       |> Bitboard.union(bl)
       |> Bitboard.union(br)
-      |> Bitboard.unset(square_index)
   end
 end

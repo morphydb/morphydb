@@ -103,9 +103,10 @@ defmodule MorphyDb.Parsers.FenParser do
     {color, _} = piece
 
     color_bitboard = all_pieces[color] |> Bitboard.set_bit(square.current)
+    all_bitboard = all_pieces[:all] |> Bitboard.set_bit(square.current)
 
     updated_pieces = %{pieces | piece => bitboard}
-    updated_all_pieces = %{all_pieces | color => color_bitboard}
+    updated_all_pieces = %{all_pieces | color => color_bitboard, all: all_bitboard}
 
     {[], %{context | pieces: updated_pieces, all_pieces: updated_all_pieces, rank_index: square.rank, file_index: square.file}}
   end

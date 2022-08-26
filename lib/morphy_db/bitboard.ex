@@ -66,6 +66,10 @@ defmodule MorphyDb.Bitboard do
     bnot(bitboard)
   end
 
+  def relative_complement(bitboard1, bitboard2) when is_integer(bitboard1) and is_integer(bitboard2) do
+    intersect(complement(bitboard2), bitboard1)
+  end
+
   @spec difference(integer, integer) :: integer
   def difference(bitboard1, bitboard2) when is_integer(bitboard1) and is_integer(bitboard2) do
     bxor(bitboard1, bitboard2)

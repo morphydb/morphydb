@@ -26,7 +26,8 @@ defmodule MorphyDb.Position do
     },
     all_pieces: %{
       :w => Bitboard.empty(),
-      :b => Bitboard.empty()
+      :b => Bitboard.empty(),
+      :all => Bitboard.empty()
     },
     rank_index: 7,
     file_index: 0

@@ -7,11 +7,11 @@ defmodule MorphyDb.Pieces.Knight do
   alias MorphyDb.Position
 
   def attack_mask(%Position{all_pieces: all_pieces}, square_index, color) when is_square(square_index) and is_side(color) do
-    move_mask(square_index)
+    move_mask(square_index, color)
       |> Bitboard.intersect(all_pieces[(if color === :w, do: :b, else: :w)])
   end
 
-  def move_mask(square_index) when is_square(square_index) do
+  def move_mask(square_index, _color) when is_square(square_index) do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
