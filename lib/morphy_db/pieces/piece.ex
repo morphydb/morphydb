@@ -1,14 +1,4 @@
 defmodule MorphyDb.Pieces.Piece do
-  defmacro conditional_union(attacks, bitboard, except \\ MorphyDb.Bitboard.empty) do
-    quote do
-      if not MorphyDb.Bitboard.intersects?(unquote(bitboard), unquote(except)) do
-        unquote(attacks) |> MorphyDb.Bitboard.union(unquote(bitboard))
-      else
-        unquote(attacks)
-      end
-    end
-  end
-
   defmodule Attacks do
     alias MorphyDb.Pieces.{Pawn, Knight, Bishop, Rook, Queen, King}
 

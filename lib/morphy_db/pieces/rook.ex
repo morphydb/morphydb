@@ -17,7 +17,7 @@ defmodule MorphyDb.Pieces.Rook do
 
   def move_mask(position, square_index, color) when is_square(square_index) do
     unrestricted_movement(square_index)
-    |> Bitboard.relative_complement(position.all_pieces.all)
+    |> Bitboard.except(position.all_pieces.all)
     |> Bitboard.union(attack_mask(position, square_index, color))
   end
 

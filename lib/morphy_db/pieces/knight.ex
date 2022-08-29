@@ -1,6 +1,5 @@
 defmodule MorphyDb.Pieces.Knight do
   import MorphyDb.Guards
-  import MorphyDb.Pieces.Piece
 
   alias MorphyDb.Bitboard
   alias MorphyDb.Board
@@ -18,21 +17,50 @@ defmodule MorphyDb.Pieces.Knight do
     |> Bitboard.intersect(all_pieces[:w])
   end
 
-  def move_mask(_position, square_index, _color) when is_square(square_index) do
+  def move_mask(position, square_index, color) when is_square(square_index) do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
-    |> conditional_union(bitboard |> Board.down(2) |> Board.left(1), Board.file(7))
-    |> conditional_union(bitboard |> Board.down(1) |> Board.left(2), Board.file(6) |> Bitboard.union(Board.file(7)))
-
-    |> conditional_union(bitboard |> Board.down(2) |> Board.right(1), Board.file(0))
-    |> conditional_union(bitboard |> Board.down(1) |> Board.right(2), Board.file(0) |> Bitboard.union(Board.file(1)))
-
-    |> conditional_union(bitboard |> Board.up(2) |> Board.left(1),  Board.file(7))
-    |> conditional_union(bitboard |> Board.up(1) |> Board.left(2),  Board.file(6) |> Bitboard.union(Board.file(7)))
-
-    |> conditional_union(bitboard |> Board.up(2) |> Board.right(1), Board.file(0))
-    |> conditional_union(bitboard |> Board.up(1) |> Board.right(2), Board.file(0) |> Bitboard.union(Board.file(1)))
-    |> Bitboard.unset(square_index)
+    |> Bitboard.union(bitboard |> move_down_left(2, 1))
+    |> Bitboard.union(bitboard |> move_down_left(1, 2))
+    |> Bitboard.union(bitboard |> move_down_right(1, 2))
+    |> Bitboard.union(bitboard |> move_down_right(2, 1))
+    |> Bitboard.union(bitboard |> move_up_left(2, 1))
+    |> Bitboard.union(bitboard |> move_up_left(1, 2))
+    |> Bitboard.union(bitboard |> move_up_right(1, 2))
+    |> Bitboard.union(bitboard |> move_up_right(2, 1))
+    |> Bitboard.except(position.all_pieces[color])
   end
+
+  defp move_down_left(bitboard, down, left),
+    do:
+      bitboard
+      |> Board.down(down)
+      |> Board.left(left)
+      |> Bitboard.except(Board.file(6))
+      |> Bitboard.except(Board.file(7))
+
+  defp move_down_right(bitboard, down, right),
+    do:
+      bitboard
+      |> Board.down(down)
+      |> Board.right(right)
+      |> Bitboard.except(Board.file(0))
+      |> Bitboard.except(Board.file(1))
+
+  defp move_up_left(bitboard, up, left),
+    do:
+      bitboard
+      |> Board.up(up)
+      |> Board.left(left)
+      |> Bitboard.except(Board.file(6))
+      |> Bitboard.except(Board.file(7))
+
+  defp move_up_right(bitboard, up, right),
+    do:
+      bitboard
+      |> Board.up(up)
+      |> Board.right(right)
+      |> Bitboard.except(Board.file(0))
+      |> Bitboard.except(Board.file(1))
 end

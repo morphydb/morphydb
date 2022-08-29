@@ -73,6 +73,8 @@ defmodule MorphyDb.Bitboard do
     bnot(bitboard)
   end
 
+  defdelegate except(bitboard1, bitboard2), to: __MODULE__, as: :relative_complement
+
   @spec relative_complement(integer, integer) :: integer
   def relative_complement(bitboard1, bitboard2)
       when is_integer(bitboard1) and is_integer(bitboard2) do

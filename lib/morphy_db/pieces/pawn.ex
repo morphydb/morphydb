@@ -1,6 +1,5 @@
 defmodule MorphyDb.Pieces.Pawn do
   import MorphyDb.Guards
-  import MorphyDb.Pieces.Piece
 
   alias MorphyDb.Bitboard
   alias MorphyDb.Board
@@ -12,8 +11,8 @@ defmodule MorphyDb.Pieces.Pawn do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
-    |> conditional_union(bitboard |> Bitboard.shift_right(7), Board.file(0))
-    |> conditional_union(bitboard |> Bitboard.shift_right(9), Board.file(7))
+    |> Bitboard.union(bitboard |> Bitboard.shift_right(7)|> Bitboard.except(Board.file(0)))
+    |> Bitboard.union(bitboard |> Bitboard.shift_right(9)|> Bitboard.except(Board.file(7)))
     |> Bitboard.intersect(all_pieces[:w])
   end
 
@@ -22,8 +21,8 @@ defmodule MorphyDb.Pieces.Pawn do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
-    |> conditional_union(bitboard |> Bitboard.shift_left(9), Board.file(7))
-    |> conditional_union(bitboard |> Bitboard.shift_left(7), Board.file(0))
+    |> Bitboard.union(bitboard |> Bitboard.shift_left(9)|> Bitboard.except(Board.file(7)))
+    |> Bitboard.union(bitboard |> Bitboard.shift_left(7)|> Bitboard.except(Board.file(0)))
     |> Bitboard.intersect(all_pieces[:b])
   end
 
@@ -34,7 +33,7 @@ defmodule MorphyDb.Pieces.Pawn do
     Bitboard.empty()
     |> Bitboard.union(bitboard |> Board.up(1))
     |> initial_square(bitboard, rank_index, :w)
-    |> Bitboard.relative_complement(position.all_pieces.all)
+    |> Bitboard.except(position.all_pieces.all)
   end
 
   def move_mask(position, square_index, :b) when is_square(square_index) do
@@ -44,7 +43,7 @@ defmodule MorphyDb.Pieces.Pawn do
     Bitboard.empty()
     |> Bitboard.union(bitboard |> Board.down(1))
     |> initial_square(bitboard, rank_index, :b)
-    |> Bitboard.relative_complement(position.all_pieces.all)
+    |> Bitboard.except(position.all_pieces.all)
   end
 
   defp initial_square(attacks, bitboard, 6, :b) do
