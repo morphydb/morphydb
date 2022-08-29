@@ -1,5 +1,6 @@
 defmodule MorphyDb.Pieces.King do
   import MorphyDb.Guards
+  import MorphyDb.Pieces.Piece
 
   alias MorphyDb.Bitboard
   alias MorphyDb.Board
@@ -24,15 +25,14 @@ defmodule MorphyDb.Pieces.King do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
-    |> Bitboard.union(bitboard |> Board.down(1))
-    |> Bitboard.union(bitboard |> Board.down(1))
-    |> Bitboard.union(bitboard |> Board.down(1) |> Board.left(1))
-    |> Bitboard.union(bitboard |> Board.down(1) |> Board.right(1))
-    |> Bitboard.union(bitboard |> Board.left(1))
-    |> Bitboard.union(bitboard |> Board.up(1))
-    |> Bitboard.union(bitboard |> Board.up(1) |> Board.left(1))
-    |> Bitboard.union(bitboard |> Board.up(1) |> Board.right(1))
-    |> Bitboard.union(bitboard |> Board.right(1))
+    |> conditional_union(bitboard |> Board.down(1))
+    |> conditional_union(bitboard |> Board.down(1) |> Board.left(1), Board.file(7))
+    |> conditional_union(bitboard |> Board.down(1) |> Board.right(1), Board.file(0))
+    |> conditional_union(bitboard |> Board.left(1), Board.file(7))
+    |> conditional_union(bitboard |> Board.up(1))
+    |> conditional_union(bitboard |> Board.up(1) |> Board.left(1), Board.file(7))
+    |> conditional_union(bitboard |> Board.up(1) |> Board.right(1), Board.file(0))
+    |> conditional_union(bitboard |> Board.right(1), Board.file(0))
     |> Bitboard.unset(square_index)
   end
 end

@@ -1,5 +1,6 @@
 defmodule MorphyDb.Pieces.Pawn do
   import MorphyDb.Guards
+  import MorphyDb.Pieces.Piece
 
   alias MorphyDb.Bitboard
   alias MorphyDb.Board
@@ -11,8 +12,8 @@ defmodule MorphyDb.Pieces.Pawn do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
-    |> Bitboard.union(bitboard |> Bitboard.shift_right(7))
-    |> Bitboard.union(bitboard |> Bitboard.shift_right(9))
+    |> conditional_union(bitboard |> Bitboard.shift_right(7), Board.file(0))
+    |> conditional_union(bitboard |> Bitboard.shift_right(9), Board.file(7))
     |> Bitboard.intersect(all_pieces[:w])
   end
 
@@ -21,8 +22,8 @@ defmodule MorphyDb.Pieces.Pawn do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
-    |> Bitboard.union(bitboard |> Bitboard.shift_left(9))
-    |> Bitboard.union(bitboard |> Bitboard.shift_left(7))
+    |> conditional_union(bitboard |> Bitboard.shift_left(9), Board.file(7))
+    |> conditional_union(bitboard |> Bitboard.shift_left(7), Board.file(0))
     |> Bitboard.intersect(all_pieces[:b])
   end
 
@@ -31,7 +32,7 @@ defmodule MorphyDb.Pieces.Pawn do
     {_, rank_index} = Square.from_square_index(square_index)
 
     Bitboard.empty()
-    |> Bitboard.union(bitboard |> Board.up())
+    |> Bitboard.union(bitboard |> Board.up(1))
     |> initial_square(bitboard, rank_index, :w)
     |> Bitboard.relative_complement(position.all_pieces.all)
   end
@@ -41,7 +42,7 @@ defmodule MorphyDb.Pieces.Pawn do
     {_, rank_index} = Square.from_square_index(square_index)
 
     Bitboard.empty()
-    |> Bitboard.union(bitboard |> Board.down())
+    |> Bitboard.union(bitboard |> Board.down(1))
     |> initial_square(bitboard, rank_index, :b)
     |> Bitboard.relative_complement(position.all_pieces.all)
   end
