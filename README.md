@@ -19,4 +19,5 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 # Sources used
 
+  * https://www.chessprogramming.org/
   * https://www.youtube.com/watch?v=QUNP-UjujBM&list=PLmN0neTso3Jxh8ZIylk74JpwfiWNI76Cs

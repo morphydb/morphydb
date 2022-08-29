@@ -10,7 +10,7 @@ defmodule MorphyDb.BitboardTest do
       test "Square index #{square_index} in an empty board is not set" do
         actual =
           Bitboard.empty()
-          |> Bitboard.is_set(unquote(square_index))
+          |> Bitboard.is_set?(unquote(square_index))
 
         assert actual === false
       end
@@ -22,7 +22,7 @@ defmodule MorphyDb.BitboardTest do
       test "Square index #{square_index} in a full board is set" do
         actual =
           Bitboard.universal()
-          |> Bitboard.is_set(unquote(square_index))
+          |> Bitboard.is_set?(unquote(square_index))
 
         assert actual === true
       end
@@ -37,7 +37,7 @@ defmodule MorphyDb.BitboardTest do
         actual =
           Bitboard.universal()
           |> Bitboard.unset(unquote(square_index))
-          |> Bitboard.is_set(unquote(square_index))
+          |> Bitboard.is_set?(unquote(square_index))
 
         assert actual === false
       end
@@ -104,7 +104,7 @@ defmodule MorphyDb.BitboardTest do
         actual =
           Bitboard.universal()
           |> Bitboard.toggle(unquote(square_index))
-          |> Bitboard.is_set(unquote(square_index))
+          |> Bitboard.is_set?(unquote(square_index))
 
         assert actual === false
       end
@@ -117,9 +117,89 @@ defmodule MorphyDb.BitboardTest do
         actual =
           Bitboard.empty()
           |> Bitboard.toggle(unquote(square_index))
-          |> Bitboard.is_set(unquote(square_index))
+          |> Bitboard.is_set?(unquote(square_index))
 
         assert actual === true
+      end
+    end)
+  end
+
+  describe "intersect" do
+    test "The intersection of universal and light squares are the light squares" do
+      actual =
+        Bitboard.universal()
+        |> Bitboard.intersect(Bitboard.light_squares())
+
+      assert actual === Bitboard.light_squares()
+    end
+
+    test "The intersection of universal and dark squares are the dark squares" do
+      actual =
+        Bitboard.universal()
+        |> Bitboard.intersect(Bitboard.dark_squares())
+
+      assert actual === Bitboard.dark_squares()
+    end
+
+    0..63
+    |> Enum.to_list()
+    |> Enum.each(fn square_index ->
+      test "The intersection of #{square_index} with an empty bitboard is empty" do
+        actual =
+          Bitboard.empty()
+          |> Bitboard.toggle(unquote(square_index))
+          |> Bitboard.intersect(Bitboard.empty())
+
+        assert actual === Bitboard.empty()
+      end
+    end)
+
+    0..63
+    |> Enum.to_list()
+    |> Enum.each(fn square_index ->
+      test "The intersection of #{square_index} with an universal bitboard is #{square_index}" do
+        square =
+          Bitboard.empty()
+          |> Bitboard.toggle(unquote(square_index))
+
+        actual = Bitboard.intersect(Bitboard.universal(), square)
+
+        assert actual === square
+      end
+    end)
+  end
+
+
+  describe "intersects?" do
+    test "Universal and light squares intersects" do
+      assert Bitboard.intersects?(Bitboard.universal(), Bitboard.light_squares())
+    end
+
+    test "Universal and dark squares intersects" do
+      assert Bitboard.intersects?(Bitboard.universal(), Bitboard.dark_squares())
+    end
+
+    0..63
+    |> Enum.to_list()
+    |> Enum.each(fn square_index ->
+      test "#{square_index} does not intersect with an empty bitboard" do
+        square =
+          Bitboard.empty()
+          |> Bitboard.toggle(unquote(square_index))
+
+        assert Bitboard.intersects?(Bitboard.empty(), square) === false
+      end
+    end)
+
+    0..63
+    |> Enum.to_list()
+    |> Enum.each(fn square_index ->
+      test "#{square_index} intersects with an universal bitboard" do
+        square =
+          Bitboard.empty()
+          |> Bitboard.toggle(unquote(square_index))
+
+        assert Bitboard.intersects?(Bitboard.universal(), square)
       end
     end)
   end

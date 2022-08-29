@@ -27,7 +27,7 @@ defmodule MorphyDb.Square do
       false
   """
   def is_light(square_index) when is_square(square_index) do
-    Bitboard.is_set(Bitboard.light_squares(), square_index)
+    Bitboard.is_set?(Bitboard.light_squares(), square_index)
   end
 
   @doc ~S"""
@@ -48,7 +48,7 @@ defmodule MorphyDb.Square do
       true
   """
   def is_dark(square_index) when is_square(square_index) do
-    Bitboard.is_set(Bitboard.dark_squares(), square_index)
+    Bitboard.is_set?(Bitboard.dark_squares(), square_index)
   end
 
   @doc ~S"""
