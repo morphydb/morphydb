@@ -2,6 +2,7 @@ defmodule MorphyDb.BitboardTest do
   use ExUnit.Case, async: true
 
   alias MorphyDb.Bitboard
+  alias MorphyDb.Square
 
   describe "is_set" do
     0..63
@@ -128,17 +129,17 @@ defmodule MorphyDb.BitboardTest do
     test "The intersection of universal and light squares are the light squares" do
       actual =
         Bitboard.universal()
-        |> Bitboard.intersect(Bitboard.light_squares())
+        |> Bitboard.intersect(MorphyDb.Square.light_squares())
 
-      assert actual === Bitboard.light_squares()
+      assert actual === MorphyDb.Square.light_squares()
     end
 
     test "The intersection of universal and dark squares are the dark squares" do
       actual =
         Bitboard.universal()
-        |> Bitboard.intersect(Bitboard.dark_squares())
+        |> Bitboard.intersect(MorphyDb.Square.dark_squares())
 
-      assert actual === Bitboard.dark_squares()
+      assert actual === MorphyDb.Square.dark_squares()
     end
 
     0..63
@@ -169,14 +170,13 @@ defmodule MorphyDb.BitboardTest do
     end)
   end
 
-
   describe "intersects?" do
     test "Universal and light squares intersects" do
-      assert Bitboard.intersects?(Bitboard.universal(), Bitboard.light_squares())
+      assert Bitboard.intersects?(Bitboard.universal(), Square.light_squares())
     end
 
     test "Universal and dark squares intersects" do
-      assert Bitboard.intersects?(Bitboard.universal(), Bitboard.dark_squares())
+      assert Bitboard.intersects?(Bitboard.universal(), Square.dark_squares())
     end
 
     0..63

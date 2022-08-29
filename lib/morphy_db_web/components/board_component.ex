@@ -6,6 +6,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   alias MorphyDb.Bitboard
   alias MorphyDb.Square
   alias MorphyDb.Position
+  alias MorphyDb.Pieces.Piece
 
   alias MorphyDbWeb.Components.SquareComponent
 
@@ -133,36 +134,18 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   defp assign_move_squares(socket, square_index) when is_square(square_index) do
     position = socket.assigns.position
-    piece = Position.piece(position, square_index)
 
-    move_squares =
-      case piece do
-        {color, :k} -> MorphyDb.Pieces.King.move_mask(position, square_index, color)
-        {color, :q} -> MorphyDb.Pieces.Queen.move_mask(position, square_index, color)
-        {color, :r} -> MorphyDb.Pieces.Rook.move_mask(position, square_index, color)
-        {color, :b} -> MorphyDb.Pieces.Bishop.move_mask(position, square_index, color)
-        {color, :n} -> MorphyDb.Pieces.Knight.move_mask(square_index, color)
-        {color, :p} -> MorphyDb.Pieces.Pawn.move_mask(position, square_index, color)
-        nil -> Bitboard.empty()
-      end
+    {color, piece} = Position.piece(position, square_index)
+    move_squares = Piece.Moves.mask(piece, position, square_index, color)
 
     socket |> assign(:move_squares, move_squares)
   end
 
   defp assign_attacked_squares(socket, square_index) when is_square(square_index) do
     position = socket.assigns.position
-    piece = Position.piece(position, square_index)
 
-    attacked_squares =
-      case piece do
-        {color, :k} -> MorphyDb.Pieces.King.attack_mask(position, square_index, color)
-        {color, :q} -> MorphyDb.Pieces.Queen.attack_mask(position, square_index, color)
-        {color, :r} -> MorphyDb.Pieces.Rook.attack_mask(position, square_index, color)
-        {color, :b} -> MorphyDb.Pieces.Bishop.attack_mask(position, square_index, color)
-        {color, :n} -> MorphyDb.Pieces.Knight.attack_mask(position, square_index, color)
-        {color, :p} -> MorphyDb.Pieces.Pawn.attack_mask(position, square_index, color)
-        nil -> Bitboard.empty()
-      end
+    {color, piece} = Position.piece(position, square_index)
+    attacked_squares = Piece.Attacks.mask(piece, position, square_index, color)
 
     socket |> assign(:attacked_squares, attacked_squares)
   end

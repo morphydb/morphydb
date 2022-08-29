@@ -4,12 +4,12 @@ defmodule MorphyDbWeb.Components.PieceComponent do
   prop square_index, :integer, required: true
   prop piece, :struct, required: true
 
-  defp piece_image({c, p}) when is_atom(c) and is_atom(p) do
-    "/images/#{translate_color(c)}_#{translate_piece(p)}.svg"
+  defp piece_image({nil, nil}) do
+    "images/none.svg"
   end
 
-  defp piece_image(nil) do
-    "images/none.svg"
+  defp piece_image({color, piece}) when is_atom(color) and is_atom(piece) do
+    "/images/#{translate_color(color)}_#{translate_piece(piece)}.svg"
   end
 
   defp translate_color(:b), do: "b"

@@ -2,10 +2,10 @@ defmodule MorphyDb.Bitboard do
   use Bitwise
   import MorphyDb.Guards
 
+  @type bitboard :: integer()
+
   def empty, do: 0
   def universal, do: 0xFFFFFFFFFFFFFFFF
-  def light_squares, do: 0x55AA55AA55AA55AA
-  def dark_squares, do: 0xAA55AA55AA55AA55
 
   @doc """
     Returns true if the bit is set
@@ -63,11 +63,6 @@ defmodule MorphyDb.Bitboard do
     intersect(bitboard1, bitboard2) > 0
   end
 
-
-
-
-
-
   @spec union(integer, integer) :: integer
   def union(bitboard1, bitboard2) when is_integer(bitboard1) and is_integer(bitboard2) do
     bor(bitboard1, bitboard2)
@@ -79,7 +74,8 @@ defmodule MorphyDb.Bitboard do
   end
 
   @spec relative_complement(integer, integer) :: integer
-  def relative_complement(bitboard1, bitboard2) when is_integer(bitboard1) and is_integer(bitboard2) do
+  def relative_complement(bitboard1, bitboard2)
+      when is_integer(bitboard1) and is_integer(bitboard2) do
     intersect(complement(bitboard2), bitboard1)
   end
 
@@ -126,11 +122,11 @@ defmodule MorphyDb.Bitboard do
       for file <- 0..7 do
         square = MorphyDb.Square.to_square_index(file, rank)
 
-        if (file === 0) do
+        if file === 0 do
           IO.write("  #{rank + 1}  ")
         end
 
-        if (is_set?(bitboard, square)) do
+        if is_set?(bitboard, square) do
           IO.write(" 1 ")
         else
           IO.write(" . ")

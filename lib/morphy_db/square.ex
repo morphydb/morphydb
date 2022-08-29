@@ -1,7 +1,11 @@
 defmodule MorphyDb.Square do
   alias MorphyDb.Bitboard
-
   import MorphyDb.Guards
+
+  def light_squares, do: 0x55AA55AA55AA55AA
+  def dark_squares, do: 0xAA55AA55AA55AA55
+
+  @type index :: 0..63
 
   @spec to_square_index(number, number) :: number
   def to_square_index(file_index, rank_index), do: 8 * rank_index + file_index
@@ -27,7 +31,7 @@ defmodule MorphyDb.Square do
       false
   """
   def is_light(square_index) when is_square(square_index) do
-    Bitboard.is_set?(Bitboard.light_squares(), square_index)
+    Bitboard.is_set?(light_squares(), square_index)
   end
 
   @doc ~S"""
@@ -48,7 +52,7 @@ defmodule MorphyDb.Square do
       true
   """
   def is_dark(square_index) when is_square(square_index) do
-    Bitboard.is_set?(Bitboard.dark_squares(), square_index)
+    Bitboard.is_set?(dark_squares(), square_index)
   end
 
   @doc ~S"""

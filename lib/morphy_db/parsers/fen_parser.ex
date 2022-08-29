@@ -17,8 +17,9 @@ defmodule MorphyDb.Parsers.FenParser do
     ascii_char([?8])
     |> post_traverse(:duplicate_nil_piece)
 
-  piece = choice([white_piece, black_piece])
-  |> post_traverse(:piece_placement)
+  piece =
+    choice([white_piece, black_piece])
+    |> post_traverse(:piece_placement)
 
   rank =
     choice([
@@ -79,6 +80,7 @@ defmodule MorphyDb.Parsers.FenParser do
   end
 
   defp next_square(rank_index, file_index), do: next_square(rank_index, file_index, 1)
+
   defp next_square(rank_index, file_index, amount) do
     square_index = 8 * rank_index + file_index
 
@@ -88,14 +90,31 @@ defmodule MorphyDb.Parsers.FenParser do
     %{:current => square_index, :rank => next_r, :file => rem(next_f, 8)}
   end
 
-  defp duplicate_nil_piece(_rest, value, context = %Position{rank_index: rank_index, file_index: file_index}, _line, _offset) do
+  defp duplicate_nil_piece(
+         _rest,
+         value,
+         context = %Position{rank_index: rank_index, file_index: file_index},
+         _line,
+         _offset
+       ) do
     amount = String.to_integer(to_string(value))
     square = next_square(rank_index, file_index, amount)
 
     {[], %{context | rank_index: square.rank, file_index: square.file}}
   end
 
-  defp piece_placement(_, value, context = %Position{pieces: pieces, all_pieces: all_pieces, rank_index: rank_index, file_index: file_index}, _line, _offset) do
+  defp piece_placement(
+         _,
+         value,
+         context = %Position{
+           pieces: pieces,
+           all_pieces: all_pieces,
+           rank_index: rank_index,
+           file_index: file_index
+         },
+         _line,
+         _offset
+       ) do
     square = next_square(rank_index, file_index)
 
     piece = value |> map_piece()
@@ -108,7 +127,14 @@ defmodule MorphyDb.Parsers.FenParser do
     updated_pieces = %{pieces | piece => bitboard}
     updated_all_pieces = %{all_pieces | color => color_bitboard, all: all_bitboard}
 
-    {[], %{context | pieces: updated_pieces, all_pieces: updated_all_pieces, rank_index: square.rank, file_index: square.file}}
+    {[],
+     %{
+       context
+       | pieces: updated_pieces,
+         all_pieces: updated_all_pieces,
+         rank_index: square.rank,
+         file_index: square.file
+     }}
   end
 
   defp side_to_move(_, [?b], context = %Position{}, _, _) do
@@ -127,7 +153,13 @@ defmodule MorphyDb.Parsers.FenParser do
     {[], %{context | en_passant: Enum.reverse(value)}}
   end
 
-  defp castling_ability(_rest, value, context = %Position{castling_ability: castling_ability}, _, _) do
+  defp castling_ability(
+         _rest,
+         value,
+         context = %Position{castling_ability: castling_ability},
+         _,
+         _
+       ) do
     side = value |> Enum.map(&map_castling_ability/1)
     updated = [castling_ability | side]
 

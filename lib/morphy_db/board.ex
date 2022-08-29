@@ -5,13 +5,17 @@ defmodule MorphyDb.Board do
   calculate_file = fn file_index when file_index in 0..7 ->
     0..7
     |> Enum.map(fn rank_index -> Square.to_square_index(file_index, rank_index) end)
-    |> Enum.reduce(Bitboard.empty(), fn square_index, bitboard -> Bitboard.set_bit(bitboard, square_index) end)
+    |> Enum.reduce(Bitboard.empty(), fn square_index, bitboard ->
+      Bitboard.set_bit(bitboard, square_index)
+    end)
   end
 
   calculate_rank = fn rank_index when rank_index in 0..7 ->
     0..7
     |> Enum.map(fn file_index -> Square.to_square_index(file_index, rank_index) end)
-    |> Enum.reduce(Bitboard.empty(), fn square_index, bitboard -> Bitboard.set_bit(bitboard, square_index) end)
+    |> Enum.reduce(Bitboard.empty(), fn square_index, bitboard ->
+      Bitboard.set_bit(bitboard, square_index)
+    end)
   end
 
   @file_a calculate_file.(0)
@@ -50,32 +54,24 @@ defmodule MorphyDb.Board do
   def file(6), do: @file_g
   def file(7), do: @file_h
 
-  def down(bitboard) do
-    down(bitboard, 1)
-  end
+  # defmacro calculate_attacks(attacks, bitboard, except \\ MorphyDb.Bitboard.empty) do
+  #   quote do
+  #     if not MorphyDb.Bitboard.intersects?(unquote(bitboard), unquote(except)) do
+  #       unquote(attacks) |> MorphyDb.Bitboard.union(unquote(bitboard))
+  #     else
+  #       unquote(attacks)
+  #     end
 
   def down(bitboard, amount) do
     bitboard |> Bitboard.shift_right(8 * amount)
-  end
-
-  def up(bitboard) do
-    up(bitboard, 1)
   end
 
   def up(bitboard, amount) do
     bitboard |> Bitboard.shift_left(8 * amount)
   end
 
-  def left(bitboard) do
-    left(bitboard, 1)
-  end
-
   def left(bitboard, amount) do
     bitboard |> Bitboard.shift_right(1 * amount)
-  end
-
-  def right(bitboard) do
-    right(bitboard, 1)
   end
 
   def right(bitboard, amount) do

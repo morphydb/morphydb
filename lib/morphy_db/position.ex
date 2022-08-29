@@ -41,8 +41,8 @@ defmodule MorphyDb.Position do
 
   def piece(%MorphyDb.Position{pieces: pieces}, square_index) when is_square(square_index) do
     case Enum.filter(pieces, fn {_piece, bitboard} -> Bitboard.is_set?(bitboard, square_index) end) do
-      [{k, _v}] -> k
-      [] -> nil
+      [{{color, piece}, _bitboard}] -> {color, piece}
+      [] -> {nil, nil}
     end
   end
 end
