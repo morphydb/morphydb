@@ -203,4 +203,85 @@ defmodule MorphyDb.BitboardTest do
       end
     end)
   end
+
+  describe "union" do
+    test "A bitboard union itself is itself" do
+      bitboard = Bitboard.empty() |> Bitboard.set_bit(1)
+
+      assert bitboard |> Bitboard.union(bitboard) === bitboard
+    end
+
+    test "Empty bitboard union itself is itself" do
+      bitboard = Bitboard.empty()
+
+      assert bitboard |> Bitboard.union(bitboard) === bitboard
+    end
+
+    test "Universal bitboard union itself is itself" do
+      bitboard = Bitboard.universal()
+
+      assert bitboard |> Bitboard.union(bitboard) === bitboard
+    end
+
+    test "Only the bits in both bitboards are set" do
+      bitboard1 = Bitboard.empty() |> Bitboard.set_bit(0)
+      bitboard2 = Bitboard.empty() |> Bitboard.set_bit(1)
+
+      bitboard = Bitboard.union(bitboard1, bitboard2)
+
+      assert Bitboard.is_set?(bitboard, 0)
+      assert Bitboard.is_set?(bitboard, 1)
+
+      2..63
+      |> Enum.each(fn square_index -> assert not Bitboard.is_set?(bitboard, square_index) end)
+    end
+  end
+
+  describe "complement" do
+    test "Complement of the dark squares are the light squares" do
+      bitboard = Square.dark_squares() |> Bitboard.complement()
+
+      assert bitboard === Square.light_squares()
+    end
+
+    test "Complement of the light squares are the dark squares" do
+      bitboard = Square.light_squares() |> Bitboard.complement()
+
+      assert bitboard === Square.dark_squares()
+    end
+
+    test "Bitboard does not intersect its complement" do
+      bitboard = Bitboard.empty() |> Bitboard.set_bit(1)
+      complement = bitboard |> Bitboard.complement()
+
+      assert not Bitboard.intersects?(bitboard, complement)
+    end
+
+    test "Union of a bitboard and its complement is universal" do
+      bitboard = Bitboard.empty() |> Bitboard.set_bit(1)
+      complement = bitboard |> Bitboard.complement()
+      total = bitboard |> Bitboard.union(complement)
+
+      assert total === Bitboard.universal()
+    end
+
+    test "Complement of the complement is the original" do
+      bitboard = Bitboard.empty() |> Bitboard.set_bit(1)
+      complement = bitboard |> Bitboard.complement() |> Bitboard.complement()
+
+      assert complement === bitboard
+    end
+
+    test "Complement of empty is universal" do
+      bitboard = Bitboard.empty() |> Bitboard.complement()
+
+      assert bitboard === Bitboard.universal()
+    end
+
+    test "Complement of universal is empty" do
+      bitboard = Bitboard.universal() |> Bitboard.complement()
+
+      assert bitboard === Bitboard.empty()
+    end
+  end
 end

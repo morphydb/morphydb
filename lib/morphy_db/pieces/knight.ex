@@ -1,5 +1,6 @@
 defmodule MorphyDb.Pieces.Knight do
   import MorphyDb.Guards
+  import MorphyDb.Pieces.Piece
 
   alias MorphyDb.Bitboard
   alias MorphyDb.Board
@@ -21,46 +22,16 @@ defmodule MorphyDb.Pieces.Knight do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
-    |> Bitboard.union(bitboard |> move_down_left(2, 1))
-    |> Bitboard.union(bitboard |> move_down_left(1, 2))
-    |> Bitboard.union(bitboard |> move_down_right(1, 2))
-    |> Bitboard.union(bitboard |> move_down_right(2, 1))
-    |> Bitboard.union(bitboard |> move_up_left(2, 1))
-    |> Bitboard.union(bitboard |> move_up_left(1, 2))
-    |> Bitboard.union(bitboard |> move_up_right(1, 2))
-    |> Bitboard.union(bitboard |> move_up_right(2, 1))
+    |> conditional_union(bitboard |> Bitboard.shift_right(17), Board.file(7))
+    |> conditional_union(bitboard |> Bitboard.shift_right(15), Board.file(0))
+    |> conditional_union(bitboard |> Bitboard.shift_right(10), Board.files(6, 7))
+    |> conditional_union(bitboard |> Bitboard.shift_right(6), Board.files(0, 1))
+
+    |> conditional_union(bitboard |> Bitboard.shift_left(17), Board.file(0))
+    |> conditional_union(bitboard |> Bitboard.shift_left(15), Board.file(7))
+    |> conditional_union(bitboard |> Bitboard.shift_left(10), Board.files(0, 1))
+    |> conditional_union(bitboard |> Bitboard.shift_left(6), Board.files(6, 7))
+
     |> Bitboard.except(position.all_pieces[side])
   end
-
-  defp move_down_left(bitboard, down, left),
-    do:
-      bitboard
-      |> Board.down(down)
-      |> Board.left(left)
-      |> Bitboard.except(Board.file(6))
-      |> Bitboard.except(Board.file(7))
-
-  defp move_down_right(bitboard, down, right),
-    do:
-      bitboard
-      |> Board.down(down)
-      |> Board.right(right)
-      |> Bitboard.except(Board.file(0))
-      |> Bitboard.except(Board.file(1))
-
-  defp move_up_left(bitboard, up, left),
-    do:
-      bitboard
-      |> Board.up(up)
-      |> Board.left(left)
-      |> Bitboard.except(Board.file(6))
-      |> Bitboard.except(Board.file(7))
-
-  defp move_up_right(bitboard, up, right),
-    do:
-      bitboard
-      |> Board.up(up)
-      |> Board.right(right)
-      |> Bitboard.except(Board.file(0))
-      |> Bitboard.except(Board.file(1))
 end

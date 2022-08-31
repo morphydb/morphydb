@@ -54,27 +54,5 @@ defmodule MorphyDb.Board do
   def file(6), do: @file_g
   def file(7), do: @file_h
 
-  # defmacro calculate_attacks(attacks, bitboard, except \\ MorphyDb.Bitboard.empty) do
-  #   quote do
-  #     if not MorphyDb.Bitboard.intersects?(unquote(bitboard), unquote(except)) do
-  #       unquote(attacks) |> MorphyDb.Bitboard.union(unquote(bitboard))
-  #     else
-  #       unquote(attacks)
-  #     end
-
-  def down(bitboard, amount) do
-    bitboard |> Bitboard.shift_right(8 * amount)
-  end
-
-  def up(bitboard, amount) do
-    bitboard |> Bitboard.shift_left(8 * amount)
-  end
-
-  def left(bitboard, amount) do
-    bitboard |> Bitboard.shift_right(1 * amount)
-  end
-
-  def right(bitboard, amount) do
-    bitboard |> Bitboard.shift_left(1 * amount)
-  end
+  def files(f1, f2), do: Bitboard.union(file(f1), file(f2))
 end
