@@ -17,7 +17,7 @@ defmodule MorphyDb.Pieces.Knight do
     |> Bitboard.intersect(all_pieces[:w])
   end
 
-  def move_mask(position, square_index, color) when is_square(square_index) do
+  def move_mask(position, square_index, side) when is_square(square_index) do
     bitboard = Bitboard.empty() |> Bitboard.set_bit(square_index)
 
     Bitboard.empty()
@@ -29,7 +29,7 @@ defmodule MorphyDb.Pieces.Knight do
     |> Bitboard.union(bitboard |> move_up_left(1, 2))
     |> Bitboard.union(bitboard |> move_up_right(1, 2))
     |> Bitboard.union(bitboard |> move_up_right(2, 1))
-    |> Bitboard.except(position.all_pieces[color])
+    |> Bitboard.except(position.all_pieces[side])
   end
 
   defp move_down_left(bitboard, down, left),

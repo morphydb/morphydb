@@ -34,14 +34,15 @@ defmodule MorphyDb.Position do
   ]
 
   def parse(fen) when is_bitstring(fen) do
-    {:ok, _, _, position, _, _} = FenParser.fen(fen |> String.trim())
-
-    position
+    case FenParser.fen(fen |> String.trim()) do
+      {:ok, _, _, position, _, _} -> {:ok, position}
+      _ -> {:error, :invalid_fen}
+    end
   end
 
   def piece(%MorphyDb.Position{pieces: pieces}, square_index) when is_square(square_index) do
     case Enum.filter(pieces, fn {_piece, bitboard} -> Bitboard.is_set?(bitboard, square_index) end) do
-      [{{color, piece}, _bitboard}] -> {color, piece}
+      [{{side, piece}, _bitboard}] -> {side, piece}
       [] -> {nil, nil}
     end
   end

@@ -11,7 +11,7 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2\n"
 
-#: lib/morphy_db_web/live/home_live.sface:6
+#: lib/morphy_db_web/live/home_live.sface:15
 #, elixir-autogen, elixir-format
 msgid "Load FEN"
 msgstr ""

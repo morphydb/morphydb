@@ -8,12 +8,12 @@ defmodule MorphyDbWeb.Components.PieceComponent do
     "images/none.svg"
   end
 
-  defp piece_image({color, piece}) when is_atom(color) and is_atom(piece) do
-    "/images/#{translate_color(color)}_#{translate_piece(piece)}.svg"
+  defp piece_image({side, piece}) when is_atom(side) and is_atom(piece) do
+    "/images/#{translate_side(side)}_#{translate_piece(piece)}.svg"
   end
 
-  defp translate_color(:b), do: "b"
-  defp translate_color(:w), do: "w"
+  defp translate_side(:b), do: "b"
+  defp translate_side(:w), do: "w"
 
   defp translate_piece(:k), do: "k"
   defp translate_piece(:q), do: "q"

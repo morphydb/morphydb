@@ -14,10 +14,10 @@ defmodule MorphyDb.Pieces.King do
     |> Bitboard.intersect(position.all_pieces[:w])
   end
 
-  def move_mask(position, square_index, color) when is_square(square_index) do
+  def move_mask(position, square_index, side) when is_square(square_index) do
     unrestricted_movement(square_index)
     |> Bitboard.except(position.all_pieces.all)
-    |> Bitboard.union(attack_mask(position, square_index, color))
+    |> Bitboard.union(attack_mask(position, square_index, side))
   end
 
   defp unrestricted_movement(square_index) when is_square(square_index) do

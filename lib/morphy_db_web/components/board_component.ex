@@ -15,22 +15,21 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   data selected_ctrl_squares, :integer, default: Bitboard.empty()
   data move_squares, :integer, default: Bitboard.empty()
   data attacked_squares, :integer, default: Bitboard.empty()
-  data position, :struct
-
-  prop fen, :string, required: true
+  prop position, :struct
 
   def update(assigns, socket) do
-    position = Position.parse(assigns.fen)
+    {:ok, socket |> setup(assigns.position)}
+  end
 
+  defp setup(socket, position) do
     squares =
       for(rank <- 7..0, file <- 0..7, do: 8 * rank + file)
       |> generate_squares(position)
 
-    {:ok,
      socket
      |> assign(:squares, squares)
      |> assign(:position, position)
-     |> assign(:white_bottom, true)}
+     |> assign(:white_bottom, true)
   end
 
   def handle_event(
@@ -135,8 +134,8 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   defp assign_move_squares(socket, square_index) when is_square(square_index) do
     position = socket.assigns.position
 
-    {color, piece} = Position.piece(position, square_index)
-    move_squares = Piece.Moves.mask(piece, position, square_index, color)
+    {side, piece} = Position.piece(position, square_index)
+    move_squares = Piece.Moves.mask(piece, position, square_index, side)
 
     socket |> assign(:move_squares, move_squares)
   end
@@ -144,8 +143,8 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   defp assign_attacked_squares(socket, square_index) when is_square(square_index) do
     position = socket.assigns.position
 
-    {color, piece} = Position.piece(position, square_index)
-    attacked_squares = Piece.Attacks.mask(piece, position, square_index, color)
+    {side, piece} = Position.piece(position, square_index)
+    attacked_squares = Piece.Attacks.mask(piece, position, square_index, side)
 
     socket |> assign(:attacked_squares, attacked_squares)
   end

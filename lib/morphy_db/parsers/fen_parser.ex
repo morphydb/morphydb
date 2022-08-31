@@ -119,13 +119,13 @@ defmodule MorphyDb.Parsers.FenParser do
 
     piece = value |> map_piece()
     bitboard = pieces[piece] |> Bitboard.set_bit(square.current)
-    {color, _} = piece
+    {side, _} = piece
 
-    color_bitboard = all_pieces[color] |> Bitboard.set_bit(square.current)
+    side_bitboard = all_pieces[side] |> Bitboard.set_bit(square.current)
     all_bitboard = all_pieces[:all] |> Bitboard.set_bit(square.current)
 
     updated_pieces = %{pieces | piece => bitboard}
-    updated_all_pieces = %{all_pieces | color => color_bitboard, all: all_bitboard}
+    updated_all_pieces = %{all_pieces | side => side_bitboard, all: all_bitboard}
 
     {[],
      %{
