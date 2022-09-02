@@ -13,15 +13,10 @@ defmodule MorphyDbWeb.HomeLive do
   end
 
   def handle_event("load_fen", %{"fen" => fen}, socket) do
-    IO.inspect(fen)
-
     {:noreply, socket |> setup(fen)}
   end
 
   def handle_event("clear_errors", _params, socket) do
-
-    IO.inspect(socket.assigns)
-
     {:noreply, socket}
   end
 

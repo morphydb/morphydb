@@ -13,7 +13,7 @@ defmodule MorphyDbWeb.Components.SquareComponent do
   prop is_move, :boolean, required: true
   prop is_attacked, :boolean, required: true
 
-  defp is_light(square_index), do: Square.is_light(square_index)
+  defp is_light?(%Square{} = square), do: Square.is_light?(square)
 
-  defp is_dark(square_index), do: Square.is_dark(square_index)
+  defp is_dark?(%Square{} = square), do: Square.is_dark?(square)
 end

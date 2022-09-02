@@ -1,7 +1,7 @@
 defmodule MorphyDb.Position do
   alias MorphyDb.Bitboard
+  alias MorphyDb.Square
   alias MorphyDb.Parsers.FenParser
-  import MorphyDb.Guards
 
   defstruct [
     :fen,
@@ -40,7 +40,7 @@ defmodule MorphyDb.Position do
     end
   end
 
-  def piece(%MorphyDb.Position{pieces: pieces}, square_index) when is_square(square_index) do
+  def piece(%MorphyDb.Position{pieces: pieces}, %Square{index: square_index}) do
     case Enum.filter(pieces, fn {_piece, bitboard} -> Bitboard.is_set?(bitboard, square_index) end) do
       [{{side, piece}, _bitboard}] -> {side, piece}
       [] -> {nil, nil}

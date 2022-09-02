@@ -1,31 +1,32 @@
 defmodule MorphyDb.Pieces.Rook do
-  import MorphyDb.Guards
+  defstruct []
 
   alias MorphyDb.Bitboard
-  alias MorphyDb.Board
+  alias MorphyDb.Position
   alias MorphyDb.Square
+  alias MorphyDb.Rank
+  alias MorphyDb.Position
+  alias MorphyDb.File
 
-  def attack_mask(position, square_index, :w) when is_square(square_index) do
-    unrestricted_movement(square_index)
+  def attack_mask(%Position{} = position, %Square{} = square, :w) do
+    unrestricted_movement(square)
     |> Bitboard.intersect(position.all_pieces[:b])
   end
 
-  def attack_mask(position, square_index, :b) when is_square(square_index) do
-    unrestricted_movement(square_index)
+  def attack_mask(%Position{} = position, %Square{} = square, :b) do
+    unrestricted_movement(square)
     |> Bitboard.intersect(position.all_pieces[:w])
   end
 
-  def move_mask(position, square_index, side) when is_square(square_index) do
-    unrestricted_movement(square_index)
+  def move_mask(%Position{} = position, %Square{} = square, side) do
+    unrestricted_movement(square)
     |> Bitboard.except(position.all_pieces.all)
-    |> Bitboard.union(attack_mask(position, square_index, side))
+    |> Bitboard.union(attack_mask(position, square, side))
   end
 
-  defp unrestricted_movement(square_index) when is_square(square_index) do
-    {file_index, rank_index} = Square.from_square_index(square_index)
-
+  defp unrestricted_movement(%Square{file: file, rank: rank}) do
     Bitboard.empty()
-    |> Bitboard.union(Board.rank(rank_index))
-    |> Bitboard.union(Board.file(file_index))
+    |> Bitboard.union(Rank.rank(rank))
+    |> Bitboard.union(File.file(file))
   end
 end

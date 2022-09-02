@@ -1,8 +1,6 @@
 defmodule MorphyDbWeb.Components.BoardComponent do
   use MorphyDbWeb, :surface_live_component
 
-  import MorphyDb.Guards
-
   alias MorphyDb.Bitboard
   alias MorphyDb.Square
   alias MorphyDb.Position
@@ -10,7 +8,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   alias MorphyDbWeb.Components.SquareComponent
 
-  data selected_square, :integer, default: Bitboard.empty()
+  data selected_square, :struct, default: nil
   data selected_alt_squares, :integer, default: Bitboard.empty()
   data selected_ctrl_squares, :integer, default: Bitboard.empty()
   data move_squares, :integer, default: Bitboard.empty()
@@ -26,10 +24,10 @@ defmodule MorphyDbWeb.Components.BoardComponent do
       for(rank <- 7..0, file <- 0..7, do: 8 * rank + file)
       |> generate_squares(position)
 
-     socket
-     |> assign(:squares, squares)
-     |> assign(:position, position)
-     |> assign(:white_bottom, true)
+    socket
+    |> assign(:squares, squares)
+    |> assign(:position, position)
+    |> assign(:white_bottom, true)
   end
 
   def handle_event(
@@ -37,12 +35,15 @@ defmodule MorphyDbWeb.Components.BoardComponent do
         %{"square_index" => square_index_string, "alt_key" => false, "ctrl_key" => false},
         socket
       ) do
-    square_index = String.to_integer(square_index_string)
+    square =
+      square_index_string
+      |> String.to_integer()
+      |> Square.new()
 
     if has_selected_square(socket) do
       {:noreply, socket |> clear_selected_squares}
     else
-      {:noreply, socket |> select_square(square_index)}
+      {:noreply, socket |> select_square(square)}
     end
   end
 
@@ -51,13 +52,16 @@ defmodule MorphyDbWeb.Components.BoardComponent do
         %{"square_index" => square_index_string, "alt_key" => true, "ctrl_key" => false},
         socket
       ) do
-    square_index = String.to_integer(square_index_string)
+    square =
+      square_index_string
+      |> String.to_integer()
+      |> Square.new()
 
     {:noreply,
      socket
-     |> update(:selected_alt_squares, &Square.toggle(&1, square_index))
-     |> update(:selected_square, &Square.deselect(&1, square_index))
-     |> update(:selected_ctrl_squares, &Square.deselect(&1, square_index))}
+     |> update(:selected_alt_squares, &Square.toggle(&1, square))
+     |> assign(:selected_square, :nil)
+     |> update(:selected_ctrl_squares, &Square.deselect(&1, square))}
   end
 
   def handle_event(
@@ -65,13 +69,16 @@ defmodule MorphyDbWeb.Components.BoardComponent do
         %{"square_index" => square_index_string, "alt_key" => false, "ctrl_key" => true},
         socket
       ) do
-    square_index = String.to_integer(square_index_string)
+    square =
+      square_index_string
+      |> String.to_integer()
+      |> Square.new()
 
     {:noreply,
      socket
-     |> update(:selected_ctrl_squares, &Square.toggle(&1, square_index))
-     |> update(:selected_square, &Square.deselect(&1, square_index))
-     |> update(:selected_alt_squares, &Square.deselect(&1, square_index))}
+     |> update(:selected_ctrl_squares, &Square.toggle(&1, square))
+     |> assign(:selected_square, :nil)
+     |> update(:selected_alt_squares, &Square.deselect(&1, square))}
   end
 
   def handle_event("square_click", %{"alt_key" => true, "ctrl_key" => true}, socket) do
@@ -104,47 +111,47 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     socket.assigns
     |> Map.take([:selected_alt_squares, :selected_ctrl_squares])
     |> Map.values()
+    |> Enum.map(fn bitboard -> bitboard.value end)
     |> Enum.sum() >
       0
   end
 
-  defp generate_squares(squares, position) do
-    squares
-    |> Enum.map(fn square_index ->
-      %{index: square_index, piece: Position.piece(position, square_index)}
+  defp generate_squares(square_indices, position) do
+    square_indices
+    |> Enum.map(fn square_index -> Square.new(square_index) end)
+    |> Enum.map(fn square ->
+      %{square: square, piece: Position.piece(position, square)}
     end)
   end
 
-  defp select_square(socket, square_index) do
-    selected_square = Bitboard.empty() |> Square.toggle(square_index)
-
-    if selected_square == socket.assigns.selected_square,
+  defp select_square(socket, %Square{} = square) do
+    if square === socket.assigns.selected_square,
       do:
         socket
-        |> assign(:selected_square, Bitboard.empty())
+        |> assign(:selected_square, nil)
         |> clear_attacked_squares()
         |> clear_move_squares(),
       else:
         socket
-        |> assign(:selected_square, selected_square)
-        |> assign_attacked_squares(square_index)
-        |> assign_move_squares(square_index)
+        |> assign(:selected_square, square)
+        |> assign_attacked_squares(square)
+        |> assign_move_squares(square)
   end
 
-  defp assign_move_squares(socket, square_index) when is_square(square_index) do
+  defp assign_move_squares(socket, %Square{} = square) do
     position = socket.assigns.position
 
-    {side, piece} = Position.piece(position, square_index)
-    move_squares = Piece.Moves.mask(piece, position, square_index, side)
+    {side, piece} = Position.piece(position, square)
+    move_squares = Piece.Moves.mask(piece, position, square, side)
 
     socket |> assign(:move_squares, move_squares)
   end
 
-  defp assign_attacked_squares(socket, square_index) when is_square(square_index) do
+  defp assign_attacked_squares(socket, %Square{} = square) do
     position = socket.assigns.position
 
-    {side, piece} = Position.piece(position, square_index)
-    attacked_squares = Piece.Attacks.mask(piece, position, square_index, side)
+    {side, piece} = Position.piece(position, square)
+    attacked_squares = Piece.Attacks.mask(piece, position, square, side)
 
     socket |> assign(:attacked_squares, attacked_squares)
   end

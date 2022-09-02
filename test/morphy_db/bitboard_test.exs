@@ -92,7 +92,7 @@ defmodule MorphyDb.BitboardTest do
           Bitboard.empty()
           |> Bitboard.set_bit(unquote(square_index))
 
-        assert actual === Integer.pow(2, unquote(square_index))
+        assert actual.value === Integer.pow(2, unquote(square_index))
       end
     end)
   end
@@ -160,8 +160,9 @@ defmodule MorphyDb.BitboardTest do
     |> Enum.each(fn square_index ->
       test "The intersection of #{square_index} with an universal bitboard is #{square_index}" do
         square =
-          Bitboard.empty()
-          |> Bitboard.toggle(unquote(square_index))
+          unquote(square_index)
+          |> Square.new()
+          |> Square.to_bitboard()
 
         actual = Bitboard.intersect(Bitboard.universal(), square)
 
@@ -184,10 +185,11 @@ defmodule MorphyDb.BitboardTest do
     |> Enum.each(fn square_index ->
       test "#{square_index} does not intersect with an empty bitboard" do
         square =
-          Bitboard.empty()
-          |> Bitboard.toggle(unquote(square_index))
+          unquote(square_index)
+          |> Square.new()
+          |> Square.to_bitboard()
 
-        assert Bitboard.intersects?(Bitboard.empty(), square) === false
+        assert square |> Bitboard.intersects?(Bitboard.empty()) === false
       end
     end)
 
@@ -196,10 +198,11 @@ defmodule MorphyDb.BitboardTest do
     |> Enum.each(fn square_index ->
       test "#{square_index} intersects with an universal bitboard" do
         square =
-          Bitboard.empty()
-          |> Bitboard.toggle(unquote(square_index))
+          unquote(square_index)
+          |> Square.new()
+          |> Square.to_bitboard()
 
-        assert Bitboard.intersects?(Bitboard.universal(), square)
+        assert square |> Bitboard.intersects?(Bitboard.universal())
       end
     end)
   end
@@ -254,7 +257,7 @@ defmodule MorphyDb.BitboardTest do
       bitboard = Bitboard.empty() |> Bitboard.set_bit(1)
       complement = bitboard |> Bitboard.complement()
 
-      assert not Bitboard.intersects?(bitboard, complement)
+      assert Bitboard.intersects?(bitboard, complement) === false
     end
 
     test "Union of a bitboard and its complement is universal" do

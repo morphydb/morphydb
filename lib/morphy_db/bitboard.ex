@@ -1,141 +1,112 @@
 defmodule MorphyDb.Bitboard do
   use Bitwise
-  import MorphyDb.Guards
 
-  @type bitboard :: integer()
+  alias __MODULE__
 
-  def empty, do: 0
-  def universal, do: 0xFFFFFFFFFFFFFFFF
+  @enforce_keys [:value]
+  defstruct value: 0
+
+  def empty, do: Bitboard.new(0)
+  def universal, do: Bitboard.new(0xFFFFFFFFFFFFFFFF)
+
+  def new() do
+    empty()
+  end
+
+  def new(value) do
+    %Bitboard{value: value}
+  end
 
   @doc """
     Returns true if the bit is set
   """
-  @spec is_set?(bitboard, byte) :: boolean
-  def is_set?(bitboard, square_index) when is_bitboard(bitboard) and is_square(square_index) do
-    get_bit(bitboard, square_index) === to_bit(square_index)
-  end
+  def is_set?(%Bitboard{} = bitboard, bitnumber), do: get_bit(bitboard, bitnumber) === to_bit(bitnumber)
 
   @doc """
     Unsets the bit in the bitboard
   """
-  @spec unset(bitboard, byte) :: bitboard
-  def unset(bitboard, square_index) when is_bitboard(bitboard) and is_square(square_index) do
-    if is_set?(bitboard, square_index), do: toggle(bitboard, square_index), else: bitboard
-  end
+  def unset(%Bitboard{} = bitboard, bitnumber), do: if is_set?(bitboard, bitnumber), do: toggle(bitboard, bitnumber), else: bitboard
 
   @doc """
-    Gets the bitboard with only the value at square_index
+    Gets the bitboard with only the value at bitnumber
   """
-  @spec get_bit(bitboard, byte) :: bitboard
-  def get_bit(bitboard, square_index) when is_bitboard(bitboard) and is_square(square_index) do
-    band(bitboard, to_bit(square_index))
-  end
+  def get_bit(%Bitboard{} = bitboard, bitnumber), do: band(bitboard.value, to_bit(bitnumber))
 
   @doc """
     Set the bit in the bitboard
   """
-  @spec set_bit(bitboard, byte) :: bitboard
-  def set_bit(bitboard, square_index) when is_bitboard(bitboard) and is_square(square_index) do
-    bor(bitboard, to_bit(square_index))
+  def set_bit(%Bitboard{} = bitboard, bitnumber) do
+    value = bor(bitboard.value, to_bit(bitnumber))
+    Bitboard.new(value)
   end
 
   @doc """
-    Toggles the bit located at square_index
+    Toggles the bit located at bitnumber
   """
-  @spec toggle(bitboard, byte) :: bitboard
-  def toggle(bitboard, square_index) when is_bitboard(bitboard) and is_square(square_index) do
-    bxor(bitboard, to_bit(square_index))
-  end
-
-  @doc """
-    Returns the intersection of two bitboards
-  """
-  @spec intersect(bitboard, bitboard) :: bitboard
-  def intersect(bitboard1, bitboard2) when is_bitboard(bitboard1) and is_bitboard(bitboard2) do
-    band(bitboard1, bitboard2)
+  def toggle(%Bitboard{} = bitboard, bitnumber) do
+    toggled = bxor(bitboard.value, to_bit(bitnumber))
+    Bitboard.new(toggled)
   end
 
   @doc """
     Determines whether bitboard1 and bitboard2 intersects
   """
-  @spec intersects?(bitboard, bitboard) :: boolean
-  def intersects?(bitboard1, bitboard2) when is_bitboard(bitboard1) and is_bitboard(bitboard2) do
-    intersect(bitboard1, bitboard2) > 0
+  def intersects?(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2), do: intersect(bitboard1, bitboard2).value > 0
+
+  @doc """
+    Returns the intersection of two bitboards
+  """
+  def intersect(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2) do
+    intersection = band(bitboard1.value, bitboard2.value)
+    Bitboard.new(intersection)
   end
 
   @doc """
     Returns the union of two bitboards
   """
-  @spec union(bitboard, bitboard) :: bitboard
-  def union(bitboard1, bitboard2) when is_bitboard(bitboard1) and is_bitboard(bitboard2) do
-    bor(bitboard1, bitboard2)
+  def union(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2) do
+    union = bor(bitboard1.value, bitboard2.value)
+    Bitboard.new(union)
   end
 
   @doc """
     Returns the complement of a bitboard
   """
-  @spec complement(bitboard) :: bitboard
-  def complement(bitboard) when is_bitboard(bitboard) do
-    difference(universal(), bitboard)
-  end
+  def complement(bitboard), do: difference(universal(), bitboard)
 
-  @spec except(bitboard, bitboard) :: bitboard
   defdelegate except(bitboard1, bitboard2), to: __MODULE__, as: :relative_complement
 
-  @spec relative_complement(bitboard, bitboard) :: bitboard
-  def relative_complement(bitboard1, bitboard2)
-      when is_bitboard(bitboard1) and is_bitboard(bitboard2) do
-    intersect(complement(bitboard2), bitboard1)
+  def relative_complement(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2) do
+    bitboard2
+    |> complement()
+    |> intersect(bitboard1)
   end
 
-  @spec difference(bitboard, bitboard) :: bitboard
-  def difference(bitboard1, bitboard2) when is_bitboard(bitboard1) and is_bitboard(bitboard2) do
-    bxor(bitboard1, bitboard2)
+  def difference(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2) do
+    difference = bxor(bitboard1.value, bitboard2.value)
+    Bitboard.new(difference)
   end
 
-  @spec shift_right(bitboard, bitboard) :: bitboard
-  def shift_right(bitboard, amount) when is_bitboard(bitboard) and is_bitboard(amount) do
-    bsr(bitboard, amount)
-  end
+  def shift_right(bitboard, amount), do: Bitboard.new(bsr(bitboard.value, amount))
 
-  @spec shift_left(bitboard, bitboard) :: bitboard
-  def shift_left(bitboard, amount) when is_bitboard(bitboard) and is_bitboard(amount) do
-    bitboard <<< amount
-  end
+  def shift_left(bitboard, amount), do: Bitboard.new(bitboard.value <<< amount)
 
-  @spec count(bitboard) :: bitboard
   def count(0), do: 0
 
-  def count(bitboard) when is_bitboard(bitboard) do
-    count(div(bitboard, 2)) + rem(bitboard, 2)
-  end
+  def count(bitboard), do: count(div(bitboard.value, 2) + rem(bitboard.value, 2))
 
-  @spec least_significant_bit(bitboard) :: bitboard
-  def least_significant_bit(bitboard) when is_bitboard(bitboard) do
-    intersect(bitboard, -bitboard) - 1
-  end
-
-  @spec least_significant_bit_index(bitboard) :: integer
-  def least_significant_bit_index(bitboard) when is_bitboard(bitboard) do
-    bitboard
-    |> least_significant_bit()
-    |> count()
-  end
-
-  defp to_bit(square_index) when is_square(square_index) do
-    bsl(1, square_index)
-  end
+  defp to_bit(bitnumber), do: bsl(1, bitnumber)
 
   def print(bitboard) do
     for rank <- 7..0 do
       for file <- 0..7 do
-        square = MorphyDb.Square.to_square_index(file, rank)
+        square = MorphyDb.Square.new(file, rank)
 
         if file === 0 do
           IO.write("  #{rank + 1}  ")
         end
 
-        if is_set?(bitboard, square) do
+        if is_set?(bitboard, square.index) do
           IO.write(" 1 ")
         else
           IO.write(" . ")

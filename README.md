@@ -21,3 +21,4 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
   * https://www.chessprogramming.org/
   * https://www.youtube.com/watch?v=QUNP-UjujBM&list=PLmN0neTso3Jxh8ZIylk74JpwfiWNI76Cs
+  * https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces

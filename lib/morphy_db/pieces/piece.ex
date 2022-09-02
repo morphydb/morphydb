@@ -1,4 +1,5 @@
 defmodule MorphyDb.Pieces.Piece do
+  defstruct []
 
   defmacro conditional_union(bitboard, union, except \\ MorphyDb.Bitboard.empty) do
     quote do

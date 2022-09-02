@@ -5,14 +5,14 @@
 >
   {#for square <- @squares}
     <SquareComponent
-      id={"square-#{square.index}"}
+      id={"square-#{square.square.index}"}
       {=square}
       click="square_click"
-      is_selected={Bitboard.is_set?(@selected_square, square.index)}
-      is_selected_with_ctrl={Bitboard.is_set?(@selected_ctrl_squares, square.index)}
-      is_selected_with_alt={Bitboard.is_set?(@selected_alt_squares, square.index)}
-      is_attacked={Bitboard.is_set?(@attacked_squares, square.index)}
-      is_move={Bitboard.is_set?(@move_squares, square.index)}
+      is_selected={@selected_square === square.square}
+      is_selected_with_ctrl={Square.is_set?(@selected_ctrl_squares, square.square)}
+      is_selected_with_alt={Square.is_set?(@selected_alt_squares, square.square)}
+      is_attacked={Square.is_set?(@attacked_squares, square.square)}
+      is_move={Square.is_set?(@move_squares, square.square)}
     />
   {/for}
 </div>
