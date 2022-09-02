@@ -6,9 +6,6 @@ defmodule MorphyDb.Square do
   @enforce_keys [:index, :rank, :file]
   defstruct [:index, :rank, :file]
 
-  def light_squares, do: Bitboard.new(0x55AA55AA55AA55AA)
-  def dark_squares, do: Bitboard.new(0xAA55AA55AA55AA55)
-
   def new(square_index) do
     file = rem(square_index, 8)
     rank = div(square_index, 8)
@@ -37,7 +34,7 @@ defmodule MorphyDb.Square do
       iex> 63 |> MorphyDb.Square.new() |> MorphyDb.Square.is_light?()
       false
   """
-  def is_light?(%Square{index: index}), do: Bitboard.is_set?(light_squares(), index)
+  def is_light?(%Square{file: file, rank: rank}), do: rem(file, 2) !== rem(rank, 2)
 
   @doc ~S"""
   Returns true if the square is a dark square
@@ -56,7 +53,7 @@ defmodule MorphyDb.Square do
       iex> 63 |> MorphyDb.Square.new() |> MorphyDb.Square.is_dark?()
       true
   """
-  def is_dark?(%Square{index: index}), do: Bitboard.is_set?(dark_squares(), index)
+  def is_dark?(%Square{} = square), do: not is_light?(square)
 
   @doc ~S"""
   Toggles the bit located at square_index

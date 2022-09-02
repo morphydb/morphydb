@@ -22,7 +22,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   defp setup(socket, position) do
     squares =
       for(rank <- 7..0, file <- 0..7, do: 8 * rank + file)
-      |> generate_squares(position)
+      |> Enum.map(fn square_index -> Square.new(square_index) end)
 
     socket
     |> assign(:squares, squares)
@@ -98,13 +98,12 @@ defmodule MorphyDbWeb.Components.BoardComponent do
       if white_bottom,
         do: for(rank <- 7..0, file <- 0..7, do: 8 * rank + file),
         else: for(rank <- 0..7, file <- 7..0, do: 8 * rank + file)
-
-    position = socket.assigns.position
+      |> Enum.map(fn square_index -> Square.new(square_index) end)
 
     {:noreply,
      socket
      |> assign(:white_bottom, white_bottom)
-     |> assign(:squares, squares |> generate_squares(position))}
+     |> assign(:squares, squares)}
   end
 
   defp has_selected_square(socket) do
@@ -114,14 +113,6 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     |> Enum.map(fn bitboard -> bitboard.value end)
     |> Enum.sum() >
       0
-  end
-
-  defp generate_squares(square_indices, position) do
-    square_indices
-    |> Enum.map(fn square_index -> Square.new(square_index) end)
-    |> Enum.map(fn square ->
-      %{square: square, piece: Position.piece(position, square)}
-    end)
   end
 
   defp select_square(socket, %Square{} = square) do

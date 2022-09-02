@@ -5,7 +5,8 @@ defmodule MorphyDbWeb.Components.SquareComponent do
 
   prop click, :event, required: true
 
-  prop square, :map, required: true
+  prop square, :struct, required: true
+  prop piece, :struct, required: true
 
   prop is_selected, :boolean, required: true
   prop is_selected_with_ctrl, :boolean, required: true

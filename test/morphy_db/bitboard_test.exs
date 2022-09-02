@@ -126,22 +126,6 @@ defmodule MorphyDb.BitboardTest do
   end
 
   describe "intersect" do
-    test "The intersection of universal and light squares are the light squares" do
-      actual =
-        Bitboard.universal()
-        |> Bitboard.intersect(MorphyDb.Square.light_squares())
-
-      assert actual === MorphyDb.Square.light_squares()
-    end
-
-    test "The intersection of universal and dark squares are the dark squares" do
-      actual =
-        Bitboard.universal()
-        |> Bitboard.intersect(MorphyDb.Square.dark_squares())
-
-      assert actual === MorphyDb.Square.dark_squares()
-    end
-
     0..63
     |> Enum.to_list()
     |> Enum.each(fn square_index ->
@@ -172,14 +156,6 @@ defmodule MorphyDb.BitboardTest do
   end
 
   describe "intersects?" do
-    test "Universal and light squares intersects" do
-      assert Bitboard.intersects?(Bitboard.universal(), Square.light_squares())
-    end
-
-    test "Universal and dark squares intersects" do
-      assert Bitboard.intersects?(Bitboard.universal(), Square.dark_squares())
-    end
-
     0..63
     |> Enum.to_list()
     |> Enum.each(fn square_index ->
@@ -241,18 +217,6 @@ defmodule MorphyDb.BitboardTest do
   end
 
   describe "complement" do
-    test "Complement of the dark squares are the light squares" do
-      bitboard = Square.dark_squares() |> Bitboard.complement()
-
-      assert bitboard === Square.light_squares()
-    end
-
-    test "Complement of the light squares are the dark squares" do
-      bitboard = Square.light_squares() |> Bitboard.complement()
-
-      assert bitboard === Square.dark_squares()
-    end
-
     test "Bitboard does not intersect its complement" do
       bitboard = Bitboard.empty() |> Bitboard.set_bit(1)
       complement = bitboard |> Bitboard.complement()

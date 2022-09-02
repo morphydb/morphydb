@@ -1,16 +1,16 @@
 <div
-  id={"square-#{@square.square.index}"}
+  id={"square-#{@square.index}"}
   class={
     "square",
     "relative",
     "bg-gradient-to-br",
-    "from-light": is_light?(@square.square),
-    "to-light/75": is_light?(@square.square),
-    "from-dark": is_dark?(@square.square),
-    "to-dark/75": is_dark?(@square.square)
+    "from-light": is_light?(@square),
+    "to-light/75": is_light?(@square),
+    "from-dark": is_dark?(@square),
+    "to-dark/75": is_dark?(@square)
   }
   :on-click={@click}
-  phx-value-square_index={@square.square.index}
+  phx-value-square_index={@square.index}
 >
   <div class={
     "absolute",
@@ -26,6 +26,6 @@
       "rounded-full border-8 border-slate-500": @is_attacked
       }>
     </div>
-      <PieceComponent square_index={@square.square.index} piece={@square.piece} id={"piece-#{@square.square.index}"} />
+      <PieceComponent square_index={@square.index} piece={@piece} id={"piece-#{@square.index}"} />
   </div>
 </div>
