@@ -32,7 +32,8 @@ defmodule MorphyDb.Pieces.Pawn do
     Bitboard.empty()
     |> Bitboard.union(bitboard |> Bitboard.shift_left(8))
     |> initial_square(bitboard, rank, :w)
-    |> Bitboard.except(position.all_pieces.all)
+    |> Bitboard.except(position.all_pieces[:w])
+    |> Bitboard.except(position.all_pieces[:b])
   end
 
   def move_mask(%Position{} = position, %Square{rank: rank} = square, :b) do
@@ -41,7 +42,8 @@ defmodule MorphyDb.Pieces.Pawn do
     Bitboard.empty()
     |> Bitboard.union(bitboard |> Bitboard.shift_right(8))
     |> initial_square(bitboard, rank, :b)
-    |> Bitboard.except(position.all_pieces.all)
+    |> Bitboard.except(position.all_pieces[:w])
+    |> Bitboard.except(position.all_pieces[:b])
   end
 
   defp initial_square(attacks, bitboard, 6, :b) do

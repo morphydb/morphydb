@@ -79,28 +79,28 @@ defmodule MorphyDb.Parsers.FenParser do
     {[], %Position{fen: fen}}
   end
 
-  defp next_square(rank_index, file_index), do: next_square(rank_index, file_index, 1)
+  defp next_square(rank, file), do: next_square(rank, file, 1)
 
-  defp next_square(rank_index, file_index, amount) do
-    square_index = 8 * rank_index + file_index
+  defp next_square(rank, file, amount) do
+    square = 8 * rank + file
 
-    next_f = file_index + amount
-    next_r = rank_index - div(next_f, 8)
+    next_f = file + amount
+    next_r = rank - div(next_f, 8)
 
-    %{:current => square_index, :rank => next_r, :file => rem(next_f, 8)}
+    %{:current => square, :rank => next_r, :file => rem(next_f, 8)}
   end
 
   defp duplicate_nil_piece(
          _rest,
          value,
-         context = %Position{rank_index: rank_index, file_index: file_index},
+         context = %Position{rank: rank, file: file},
          _line,
          _offset
        ) do
     amount = String.to_integer(to_string(value))
-    square = next_square(rank_index, file_index, amount)
+    square = next_square(rank, file, amount)
 
-    {[], %{context | rank_index: square.rank, file_index: square.file}}
+    {[], %{context | rank: square.rank, file: square.file}}
   end
 
   defp piece_placement(
@@ -109,31 +109,30 @@ defmodule MorphyDb.Parsers.FenParser do
          context = %Position{
            pieces: pieces,
            all_pieces: all_pieces,
-           rank_index: rank_index,
-           file_index: file_index
+           rank: rank,
+           file: file
          },
          _line,
          _offset
        ) do
-    square = next_square(rank_index, file_index)
+    square = next_square(rank, file)
 
     piece = value |> map_piece()
     bitboard = pieces[piece] |> Bitboard.set_bit(square.current)
     {side, _} = piece
 
     side_bitboard = all_pieces[side] |> Bitboard.set_bit(square.current)
-    all_bitboard = all_pieces[:all] |> Bitboard.set_bit(square.current)
 
     updated_pieces = %{pieces | piece => bitboard}
-    updated_all_pieces = %{all_pieces | side => side_bitboard, all: all_bitboard}
+    updated_all_pieces = %{all_pieces | side => side_bitboard}
 
     {[],
      %{
        context
        | pieces: updated_pieces,
          all_pieces: updated_all_pieces,
-         rank_index: square.rank,
-         file_index: square.file
+         rank: square.rank,
+         file: square.file
      }}
   end
 

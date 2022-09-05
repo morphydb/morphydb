@@ -22,7 +22,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   defp setup(socket, position) do
     squares =
       for(rank <- 7..0, file <- 0..7, do: 8 * rank + file)
-      |> Enum.map(fn square_index -> Square.new(square_index) end)
+      |> Enum.map(fn square -> Square.new(square) end)
 
     socket
     |> assign(:squares, squares)
@@ -32,11 +32,11 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   def handle_event(
         "square_click",
-        %{"square_index" => square_index_string, "alt_key" => false, "ctrl_key" => false},
+        %{"square" => square_string, "alt_key" => false, "ctrl_key" => false},
         socket
       ) do
     square =
-      square_index_string
+      square_string
       |> String.to_integer()
       |> Square.new()
 
@@ -49,11 +49,11 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   def handle_event(
         "square_click",
-        %{"square_index" => square_index_string, "alt_key" => true, "ctrl_key" => false},
+        %{"square" => square_string, "alt_key" => true, "ctrl_key" => false},
         socket
       ) do
     square =
-      square_index_string
+      square_string
       |> String.to_integer()
       |> Square.new()
 
@@ -66,11 +66,11 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
   def handle_event(
         "square_click",
-        %{"square_index" => square_index_string, "alt_key" => false, "ctrl_key" => true},
+        %{"square" => square_string, "alt_key" => false, "ctrl_key" => true},
         socket
       ) do
     square =
-      square_index_string
+      square_string
       |> String.to_integer()
       |> Square.new()
 
@@ -98,7 +98,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
       if white_bottom,
         do: for(rank <- 7..0, file <- 0..7, do: 8 * rank + file),
         else: for(rank <- 0..7, file <- 7..0, do: 8 * rank + file)
-      |> Enum.map(fn square_index -> Square.new(square_index) end)
+      |> Enum.map(fn square -> Square.new(square) end)
 
     {:noreply,
      socket

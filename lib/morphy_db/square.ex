@@ -6,9 +6,9 @@ defmodule MorphyDb.Square do
   @enforce_keys [:index, :rank, :file]
   defstruct [:index, :rank, :file]
 
-  def new(square_index) do
-    file = rem(square_index, 8)
-    rank = div(square_index, 8)
+  def new(square) do
+    file = rem(square, 8)
+    rank = div(square, 8)
 
     new(file, rank)
   end
@@ -56,7 +56,7 @@ defmodule MorphyDb.Square do
   def is_dark?(%Square{} = square), do: not is_light?(square)
 
   @doc ~S"""
-  Toggles the bit located at square_index
+  Toggles the bit located at square
 
   ## Examples
 
@@ -75,7 +75,7 @@ defmodule MorphyDb.Square do
   def toggle(%Bitboard{} = bitboard, %Square{index: index}), do: Bitboard.toggle(bitboard, index)
 
   @doc ~S"""
-  Deselects the bit located at square_index
+  Deselects the bit located at square
 
   ## Examples
 

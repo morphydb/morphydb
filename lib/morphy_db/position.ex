@@ -26,11 +26,10 @@ defmodule MorphyDb.Position do
     },
     all_pieces: %{
       :w => Bitboard.empty(),
-      :b => Bitboard.empty(),
-      :all => Bitboard.empty()
+      :b => Bitboard.empty()
     },
-    rank_index: 7,
-    file_index: 0
+    rank: 7,
+    file: 0
   ]
 
   def parse(fen) when is_bitstring(fen) do
@@ -40,8 +39,8 @@ defmodule MorphyDb.Position do
     end
   end
 
-  def piece(%MorphyDb.Position{pieces: pieces}, %Square{index: square_index}) do
-    case Enum.filter(pieces, fn {_piece, bitboard} -> Bitboard.is_set?(bitboard, square_index) end) do
+  def piece(%MorphyDb.Position{pieces: pieces}, %Square{index: square}) do
+    case Enum.filter(pieces, fn {_piece, bitboard} -> Bitboard.is_set?(bitboard, square) end) do
       [{{side, piece}, _bitboard}] -> {side, piece}
       [] -> {nil, nil}
     end

@@ -7,11 +7,11 @@ defmodule MorphyDb.BitboardTest do
   describe "is_set" do
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Square index #{square_index} in an empty board is not set" do
+    |> Enum.each(fn square ->
+      test "Square index #{square} in an empty board is not set" do
         actual =
           Bitboard.empty()
-          |> Bitboard.is_set?(unquote(square_index))
+          |> Bitboard.is_set?(unquote(square))
 
         assert actual === false
       end
@@ -19,11 +19,11 @@ defmodule MorphyDb.BitboardTest do
 
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Square index #{square_index} in a full board is set" do
+    |> Enum.each(fn square ->
+      test "Square index #{square} in a full board is set" do
         actual =
           Bitboard.universal()
-          |> Bitboard.is_set?(unquote(square_index))
+          |> Bitboard.is_set?(unquote(square))
 
         assert actual === true
       end
@@ -33,12 +33,12 @@ defmodule MorphyDb.BitboardTest do
   describe "unset" do
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Unsetting #{square_index} in a full board is not set" do
+    |> Enum.each(fn square ->
+      test "Unsetting #{square} in a full board is not set" do
         actual =
           Bitboard.universal()
-          |> Bitboard.unset(unquote(square_index))
-          |> Bitboard.is_set?(unquote(square_index))
+          |> Bitboard.unset(unquote(square))
+          |> Bitboard.is_set?(unquote(square))
 
         assert actual === false
       end
@@ -48,23 +48,23 @@ defmodule MorphyDb.BitboardTest do
   describe "get_bit" do
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Getting #{square_index} in a full board is 2^square_index" do
+    |> Enum.each(fn square ->
+      test "Getting #{square} in a full board is 2^square" do
         actual =
           Bitboard.universal()
-          |> Bitboard.get_bit(unquote(square_index))
+          |> Bitboard.get_bit(unquote(square))
 
-        assert actual === Integer.pow(2, unquote(square_index))
+        assert actual === Integer.pow(2, unquote(square))
       end
     end)
 
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Getting #{square_index} in an empty board is 0" do
+    |> Enum.each(fn square ->
+      test "Getting #{square} in an empty board is 0" do
         actual =
           Bitboard.empty()
-          |> Bitboard.get_bit(unquote(square_index))
+          |> Bitboard.get_bit(unquote(square))
 
         assert actual === 0
       end
@@ -74,11 +74,11 @@ defmodule MorphyDb.BitboardTest do
   describe "set_bit" do
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Set #{square_index} in a full board doesn't change the board" do
+    |> Enum.each(fn square ->
+      test "Set #{square} in a full board doesn't change the board" do
         actual =
           Bitboard.universal()
-          |> Bitboard.set_bit(unquote(square_index))
+          |> Bitboard.set_bit(unquote(square))
 
         assert actual === Bitboard.universal()
       end
@@ -86,13 +86,13 @@ defmodule MorphyDb.BitboardTest do
 
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Set #{square_index} in an empty board results in 2^square_index" do
+    |> Enum.each(fn square ->
+      test "Set #{square} in an empty board results in 2^square" do
         actual =
           Bitboard.empty()
-          |> Bitboard.set_bit(unquote(square_index))
+          |> Bitboard.set_bit(unquote(square))
 
-        assert actual.value === Integer.pow(2, unquote(square_index))
+        assert actual.value === Integer.pow(2, unquote(square))
       end
     end)
   end
@@ -100,12 +100,12 @@ defmodule MorphyDb.BitboardTest do
   describe "toggle" do
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Toggling #{square_index} in a full board unsets that index" do
+    |> Enum.each(fn square ->
+      test "Toggling #{square} in a full board unsets that index" do
         actual =
           Bitboard.universal()
-          |> Bitboard.toggle(unquote(square_index))
-          |> Bitboard.is_set?(unquote(square_index))
+          |> Bitboard.toggle(unquote(square))
+          |> Bitboard.is_set?(unquote(square))
 
         assert actual === false
       end
@@ -113,12 +113,12 @@ defmodule MorphyDb.BitboardTest do
 
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "Toggling #{square_index} in an empty board sets that index" do
+    |> Enum.each(fn square ->
+      test "Toggling #{square} in an empty board sets that index" do
         actual =
           Bitboard.empty()
-          |> Bitboard.toggle(unquote(square_index))
-          |> Bitboard.is_set?(unquote(square_index))
+          |> Bitboard.toggle(unquote(square))
+          |> Bitboard.is_set?(unquote(square))
 
         assert actual === true
       end
@@ -128,11 +128,11 @@ defmodule MorphyDb.BitboardTest do
   describe "intersect" do
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "The intersection of #{square_index} with an empty bitboard is empty" do
+    |> Enum.each(fn square ->
+      test "The intersection of #{square} with an empty bitboard is empty" do
         actual =
           Bitboard.empty()
-          |> Bitboard.toggle(unquote(square_index))
+          |> Bitboard.toggle(unquote(square))
           |> Bitboard.intersect(Bitboard.empty())
 
         assert actual === Bitboard.empty()
@@ -141,10 +141,10 @@ defmodule MorphyDb.BitboardTest do
 
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "The intersection of #{square_index} with an universal bitboard is #{square_index}" do
+    |> Enum.each(fn square ->
+      test "The intersection of #{square} with an universal bitboard is #{square}" do
         square =
-          unquote(square_index)
+          unquote(square)
           |> Square.new()
           |> Square.to_bitboard()
 
@@ -158,10 +158,10 @@ defmodule MorphyDb.BitboardTest do
   describe "intersects?" do
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "#{square_index} does not intersect with an empty bitboard" do
+    |> Enum.each(fn square ->
+      test "#{square} does not intersect with an empty bitboard" do
         square =
-          unquote(square_index)
+          unquote(square)
           |> Square.new()
           |> Square.to_bitboard()
 
@@ -171,10 +171,10 @@ defmodule MorphyDb.BitboardTest do
 
     0..63
     |> Enum.to_list()
-    |> Enum.each(fn square_index ->
-      test "#{square_index} intersects with an universal bitboard" do
+    |> Enum.each(fn square ->
+      test "#{square} intersects with an universal bitboard" do
         square =
-          unquote(square_index)
+          unquote(square)
           |> Square.new()
           |> Square.to_bitboard()
 
@@ -212,7 +212,7 @@ defmodule MorphyDb.BitboardTest do
       assert Bitboard.is_set?(bitboard, 1)
 
       2..63
-      |> Enum.each(fn square_index -> assert not Bitboard.is_set?(bitboard, square_index) end)
+      |> Enum.each(fn square -> assert not Bitboard.is_set?(bitboard, square) end)
     end
   end
 
