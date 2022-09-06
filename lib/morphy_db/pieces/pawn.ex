@@ -62,30 +62,33 @@ defmodule MorphyDb.Pieces.Pawn do
   end
 
   defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, :w)
-    when ep_square.rank === square.rank + 1 and ep_square.file === square.file - 1 do
+    when ep_square.rank === 5 and ep_square.file === square.file - 1 do
 
     attacks |> Bitboard.union(Square.to_bitboard(square) |> Bitboard.shift_left(7))
   end
 
   defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, :w)
-    when ep_square.rank === square.rank + 1 and ep_square.file === square.file + 1 do
+    when ep_square.rank === 5 and ep_square.file === square.file + 1 do
 
     attacks |> Bitboard.union(Square.to_bitboard(square) |> Bitboard.shift_left(9))
   end
 
   defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, :b)
-    when ep_square.rank === square.rank - 1 and ep_square.file === square.file - 1 do
+    when ep_square.rank === 2 and ep_square.file === square.file - 1 do
 
     attacks |> Bitboard.union(Square.to_bitboard(square) |> Bitboard.shift_right(9))
   end
 
   defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, :b)
-    when ep_square.rank === square.rank - 1 and ep_square.file === square.file + 1 do
+    when ep_square.rank === 2 and ep_square.file === square.file + 1 do
 
     attacks |> Bitboard.union(Square.to_bitboard(square) |> Bitboard.shift_right(7))
   end
 
-  defp en_passant(%Bitboard{} = attacks, _position, _square, _side) do
+  defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, _side) do
+    IO.inspect(ep_square)
+    IO.inspect(square)
+
     attacks
   end
 end
