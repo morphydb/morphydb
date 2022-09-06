@@ -16,7 +16,8 @@ defmodule MorphyDb.MixProject do
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
-        "coveralls.html": :test
+        "coveralls.html": :test,
+        "coveralls.lcov": :test
       ]
     ]
   end
@@ -62,7 +63,7 @@ defmodule MorphyDb.MixProject do
       {:elixir_sense, github: "elixir-lsp/elixir_sense"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:nimble_parsec, "~> 1.0"},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.14.6", only: :test}
     ]
   end
 

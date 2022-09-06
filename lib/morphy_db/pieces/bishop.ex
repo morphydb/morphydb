@@ -15,8 +15,7 @@ defmodule MorphyDb.Pieces.Bishop do
     mask(position, square)
     |> Attacks.filter_friendly(position, :b)
 
-  def move_mask(%Position{} = position, %Square{} = square, :w), do: mask(position, square) |> Bitboard.except(Position.white_pieces(position))
-  def move_mask(%Position{} = position, %Square{} = square, :b), do: mask(position, square) |> Bitboard.except(Position.black_pieces(position))
+  def move_mask(%Position{} = position, %Square{} = square, side), do: mask(position, square) |> Bitboard.except(Position.pieces(position, side))
 
   defp mask(%Position{} = position, %Square{rank: rank, file: file}) do
     all_pieces = Position.all_pieces(position)

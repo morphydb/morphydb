@@ -18,7 +18,8 @@
 				"csstools.postcss",
 				"esbenp.prettier-vscode",
 				"RoyalMist.vscode-eex-format",
-				"samuel-pordeus.elixir-test"
+				"samuel-pordeus.elixir-test",
+				"ryanluker.vscode-coverage-gutters"
 			],
 			"settings": {
 				"phoenix-heex": "html",

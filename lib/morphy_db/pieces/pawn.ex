@@ -16,6 +16,7 @@ defmodule MorphyDb.Pieces.Pawn do
     |> conditional_union(bitboard |> Bitboard.shift_left(9), File.file(7))
     |> conditional_union(bitboard |> Bitboard.shift_left(7), File.file(0))
     |> Attacks.filter_friendly(position, :w)
+    |> en_passant(position, square, :w)
   end
 
   def attack_mask(%Position{} = position, %Square{} = square, :b) do
@@ -25,6 +26,7 @@ defmodule MorphyDb.Pieces.Pawn do
     |> conditional_union(bitboard |> Bitboard.shift_right(7), File.file(0))
     |> conditional_union(bitboard |> Bitboard.shift_right(9), File.file(7))
     |> Attacks.filter_friendly(position, :b)
+    |> en_passant(position, square, :b)
   end
 
   def move_mask(%Position{} = position, %Square{rank: rank} = square, :w) do
@@ -56,6 +58,45 @@ defmodule MorphyDb.Pieces.Pawn do
   end
 
   defp initial_square(attacks, _, _, _, _) do
+    attacks
+  end
+
+  defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, :w)
+    when ep_square.rank === square.rank + 1 and ep_square.file === square.file - 1 do
+
+    IO.puts("en passant 1")
+
+    attacks |> Bitboard.union(Square.to_bitboard(square) |> Bitboard.shift_left(7))
+  end
+
+  defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, :w)
+    when ep_square.rank === square.rank + 1 and ep_square.file === square.file + 1 do
+
+    IO.puts("en passant 2")
+
+    attacks |> Bitboard.union(Square.to_bitboard(square) |> Bitboard.shift_left(9))
+  end
+
+  defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, :b)
+    when ep_square.rank === square.rank - 1 and ep_square.file === square.file - 1 do
+      IO.puts("en passant 3")
+
+    attacks |> Bitboard.union(Square.to_bitboard(square) |> Bitboard.shift_right(9))
+  end
+
+  defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, :b)
+    when ep_square.rank === square.rank - 1 and ep_square.file === square.file + 1 do
+      IO.puts("en passant 4")
+
+    attacks |> Bitboard.union(Square.to_bitboard(square) |> Bitboard.shift_right(7))
+  end
+
+  # defp en_passant(%Bitboard{} = attacks, _position, _square, _side) do
+  defp en_passant(%Bitboard{} = attacks, %Position{en_passant: ep_square}, %Square{} = square, _side) do
+    IO.puts("en passant 6")
+    IO.inspect(ep_square)
+    IO.inspect(square)
+
     attacks
   end
 end

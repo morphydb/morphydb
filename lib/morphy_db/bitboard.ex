@@ -77,9 +77,7 @@ defmodule MorphyDb.Bitboard do
   """
   def complement(bitboard), do: difference(universal(), bitboard)
 
-  defdelegate except(bitboard1, bitboard2), to: __MODULE__, as: :relative_complement
-
-  def relative_complement(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2) do
+  def except(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2) do
     bitboard2
     |> complement()
     |> intersect(bitboard1)

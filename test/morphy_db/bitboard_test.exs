@@ -4,6 +4,12 @@ defmodule MorphyDb.BitboardTest do
   alias MorphyDb.Bitboard
   alias MorphyDb.Square
 
+  describe "new" do
+    test "New Bitboard is empty" do
+      assert Bitboard.new() === Bitboard.empty()
+    end
+  end
+
   describe "is_set" do
     0..63
     |> Enum.to_list()

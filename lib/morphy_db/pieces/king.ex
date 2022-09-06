@@ -19,14 +19,9 @@ defmodule MorphyDb.Pieces.King do
     |> Attacks.filter_friendly(position, :b)
   end
 
-  def move_mask(%Position{} = position, %Square{} = square, :w) do
+  def move_mask(%Position{} = position, %Square{} = square, side) do
     unrestricted_movement(square)
-    |> Bitboard.except(Position.white_pieces(position))
-  end
-
-  def move_mask(%Position{} = position, %Square{} = square, :b) do
-    unrestricted_movement(square)
-    |> Bitboard.except(Position.black_pieces(position))
+    |> Bitboard.except(Position.pieces(position, side))
   end
 
   defp unrestricted_movement(%Square{} = square) do

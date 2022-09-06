@@ -1,6 +1,5 @@
 defmodule MorphyDb.Square do
   alias MorphyDb.Bitboard
-  alias MorphyDb.File
 
   alias __MODULE__
 
@@ -91,19 +90,17 @@ defmodule MorphyDb.Square do
   """
   def deselect(%Bitboard{} = bitboard, %Square{index: index}), do: Bitboard.unset(bitboard, index)
 
+  @doc ~s"""
+  Returns true if the square is set in the bitboard
+
+  ## Examples
+
+      iex> MorphyDb.Bitboard.empty() |> MorphyDb.Square.is_set?(MorphyDb.Square.new(0))
+      false
+
+      iex> MorphyDb.Bitboard.empty() |> MorphyDb.Square.toggle(MorphyDb.Square.new(8)) |> MorphyDb.Square.is_set?(MorphyDb.Square.new(8))
+      true
+
+  """
   def is_set?(%Bitboard{} = bitboard, %Square{index: index}), do: Bitboard.is_set?(bitboard, index)
-
-  def move_up(%Square{file: file, rank: rank}), do: new(file, rank + 1)
-  def move_down(%Square{file: file, rank: rank}), do: new(file, rank - 1)
-  def move_left(%Square{file: file, rank: rank} = square) do
-    new_square = new(file - 1, rank)
-
-    if Bitboard.intersects?(to_bitboard(new_square), File.file(7)), do: square, else: new_square
-  end
-
-  def move_right(%Square{file: file, rank: rank} = square) do
-    new_square = new(file + 1, rank)
-
-    if Bitboard.intersects?(to_bitboard(new_square), File.file(0)), do: square, else: new_square
-  end
 end

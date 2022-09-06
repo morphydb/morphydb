@@ -1,6 +1,7 @@
 defmodule MorphyDb.Parsers.FenParser do
   alias MorphyDb.Position
   alias MorphyDb.Bitboard
+  alias MorphyDb.Square
 
   import NimbleParsec
 
@@ -143,7 +144,9 @@ defmodule MorphyDb.Parsers.FenParser do
   end
 
   defp en_passant(_rest, value, context = %Position{}, _, _) do
-    {[], %{context | en_passant: Enum.reverse(value)}}
+    [rank, file] = value
+
+    {[], %{context | en_passant: Square.new(file - ?a, rank - ?1)}}
   end
 
   defp castling_ability(

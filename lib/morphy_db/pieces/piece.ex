@@ -58,8 +58,6 @@ defmodule MorphyDb.Pieces.Piece do
 
     def mask(:k, position, square, side),
       do: King.attack_mask(position, square, side)
-
-    def mask(_, _, _, _), do: MorphyDb.Bitboard.empty()
   end
 
   defmodule Moves do
@@ -79,7 +77,5 @@ defmodule MorphyDb.Pieces.Piece do
       do: Queen.move_mask(position, square, side)
 
     def mask(:k, position, square, side), do: King.move_mask(position, square, side)
-
-    def mask(_, _, _, _), do: MorphyDb.Bitboard.empty()
   end
 end
