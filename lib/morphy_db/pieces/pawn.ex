@@ -7,15 +7,7 @@ defmodule MorphyDb.Pieces.Pawn do
   alias MorphyDb.File
   alias MorphyDb.Position
   alias MorphyDb.Square
-
-  def attack_mask(%Position{} = position, %Square{} = square, :b) do
-    bitboard = Square.to_bitboard(square)
-
-    Bitboard.empty()
-    |> conditional_union(bitboard |> Bitboard.shift_right(7), File.file(0))
-    |> conditional_union(bitboard |> Bitboard.shift_right(9), File.file(7))
-    |> Bitboard.intersect(position.all_pieces[:w])
-  end
+  alias MorphyDb.Pieces.Piece.Attacks
 
   def attack_mask(%Position{} = position, %Square{} = square, :w) do
     bitboard = Square.to_bitboard(square)
@@ -23,7 +15,16 @@ defmodule MorphyDb.Pieces.Pawn do
     Bitboard.empty()
     |> conditional_union(bitboard |> Bitboard.shift_left(9), File.file(7))
     |> conditional_union(bitboard |> Bitboard.shift_left(7), File.file(0))
-    |> Bitboard.intersect(position.all_pieces[:b])
+    |> Attacks.filter_friendly(position, :w)
+  end
+
+  def attack_mask(%Position{} = position, %Square{} = square, :b) do
+    bitboard = Square.to_bitboard(square)
+
+    Bitboard.empty()
+    |> conditional_union(bitboard |> Bitboard.shift_right(7), File.file(0))
+    |> conditional_union(bitboard |> Bitboard.shift_right(9), File.file(7))
+    |> Attacks.filter_friendly(position, :b)
   end
 
   def move_mask(%Position{} = position, %Square{rank: rank} = square, :w) do
@@ -31,9 +32,8 @@ defmodule MorphyDb.Pieces.Pawn do
 
     Bitboard.empty()
     |> Bitboard.union(bitboard |> Bitboard.shift_left(8))
-    |> initial_square(bitboard, rank, :w)
-    |> Bitboard.except(position.all_pieces[:w])
-    |> Bitboard.except(position.all_pieces[:b])
+    |> initial_square(bitboard, rank, position, :w)
+    |> Bitboard.except(Position.all_pieces(position))
   end
 
   def move_mask(%Position{} = position, %Square{rank: rank} = square, :b) do
@@ -41,22 +41,21 @@ defmodule MorphyDb.Pieces.Pawn do
 
     Bitboard.empty()
     |> Bitboard.union(bitboard |> Bitboard.shift_right(8))
-    |> initial_square(bitboard, rank, :b)
-    |> Bitboard.except(position.all_pieces[:w])
-    |> Bitboard.except(position.all_pieces[:b])
+    |> initial_square(bitboard, rank, position, :b)
+    |> Bitboard.except(Position.all_pieces(position))
   end
 
-  defp initial_square(attacks, bitboard, 6, :b) do
+  defp initial_square(attacks, bitboard, 6, %Position{} = position, :b) do
     attacks
-    |> Bitboard.union(bitboard |> Bitboard.shift_right(16))
+    |> conditional_union(bitboard |> Bitboard.shift_right(16), Position.all_pieces(position))
   end
 
-  defp initial_square(attacks, bitboard, 1, :w) do
+  defp initial_square(attacks, bitboard, 1, %Position{} = position, :w) do
     attacks
-    |> Bitboard.union(bitboard |> Bitboard.shift_left(16))
+    |> conditional_union(bitboard |> Bitboard.shift_left(16), Position.all_pieces(position))
   end
 
-  defp initial_square(attacks, _, _, _) do
+  defp initial_square(attacks, _, _, _, _) do
     attacks
   end
 end

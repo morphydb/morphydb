@@ -2,14 +2,14 @@ defmodule MorphyDbWeb.HomeLive do
   use MorphyDbWeb, :surface_live_view
   import MorphyDbWeb.Gettext
 
-
   alias MorphyDbWeb.Components.{BoardComponent, MoveTable}
   alias MorphyDb.Position
+  alias MorphyDb.Board
 
   def mount(_params, _session, socket) do
     {:ok,
      socket |> setup("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10"),
-    temporary_assigns: [error: []]}
+     temporary_assigns: [error: []]}
   end
 
   def handle_event("load_fen", %{"fen" => fen}, socket) do
@@ -25,7 +25,7 @@ defmodule MorphyDbWeb.HomeLive do
       {:ok, position} ->
         socket
         |> assign(:fen, fen)
-        |> assign(:position, position)
+        |> assign(:board, Board.new(position, :w))
 
       {:error, :invalid_fen} ->
         socket

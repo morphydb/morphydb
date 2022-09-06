@@ -4,47 +4,46 @@ defmodule MorphyDb.Pieces.Bishop do
   alias MorphyDb.Bitboard
   alias MorphyDb.Square
   alias MorphyDb.Position
+  alias MorphyDb.Pieces.Piece.Blocked
+  alias MorphyDb.Pieces.Piece.Attacks
 
-  def attack_mask(%Position{} = position, %Square{} = square, :w) do
-    unrestricted_movement(square)
-    |> Bitboard.intersect(position.all_pieces[:b])
-  end
+  def attack_mask(%Position{} = position, %Square{} = square, :w), do:
+    mask(position, square)
+    |> Attacks.filter_friendly(position, :w)
 
-  def attack_mask(%Position{} = position, %Square{} = square, :b) do
-    unrestricted_movement(square)
-    |> Bitboard.intersect(position.all_pieces[:w])
-  end
+  def attack_mask(%Position{} = position, %Square{} = square, :b), do:
+    mask(position, square)
+    |> Attacks.filter_friendly(position, :b)
 
-  def move_mask(%Position{} = position, %Square{} = square, side) do
-    unrestricted_movement(square)
-    |> Bitboard.except(position.all_pieces[:w])
-    |> Bitboard.except(position.all_pieces[:b])
-    |> Bitboard.union(attack_mask(position, square, side))
-  end
+  def move_mask(%Position{} = position, %Square{} = square, :w), do: mask(position, square) |> Bitboard.except(Position.white_pieces(position))
+  def move_mask(%Position{} = position, %Square{} = square, :b), do: mask(position, square) |> Bitboard.except(Position.black_pieces(position))
 
-  def unrestricted_movement(%Square{file: file, rank: rank}) do
-    max_to_tr = min(7 - file, 7 - rank)
-    max_to_tl = min(file, 7 - rank)
-    max_to_br = min(7 - file, rank)
-    max_to_bl = min(file, rank)
+  defp mask(%Position{} = position, %Square{rank: rank, file: file}) do
+    all_pieces = Position.all_pieces(position)
 
-    tl =
-      1..max_to_tl//1
-      |> Enum.map(fn index -> Square.new(file - index, rank + index) end)
+    top_right =
+      (file + 1)..7//1 |> Enum.zip((rank + 1)..7//1)
+      |> Enum.map(fn {f, r} -> Square.new(f, r) end)
+      |> Blocked.mask_movement(all_pieces)
 
-    tr =
-      1..max_to_tr//1
-      |> Enum.map(fn index -> Square.new(file + index, rank + index) end)
+    bottom_right =
+      (file + 1)..7//1 |> Enum.zip((rank - 1)..0//-1)
+      |> Enum.map(fn {f, r} -> Square.new(f, r) end)
+      |> Blocked.mask_movement(all_pieces)
 
-    bl =
-      1..max_to_bl//1
-      |> Enum.map(fn index -> Square.new(file - index, rank - index) end)
+    top_left =
+      (file - 1)..0//-1 |> Enum.zip((rank + 1)..7//1)
+      |> Enum.map(fn {f, r} -> Square.new(f, r) end)
+      |> Blocked.mask_movement(all_pieces)
 
-    br =
-      1..max_to_br//1
-      |> Enum.map(fn index -> Square.new(file + index, rank - index) end)
+    bottom_left =
+      (file - 1)..0//-1 |> Enum.zip((rank - 1)..0//-1)
+      |> Enum.map(fn {f, r} -> Square.new(f, r) end)
+      |> Blocked.mask_movement(all_pieces)
 
-    (tl ++ tr ++ bl ++ br)
-    |> Enum.reduce(Bitboard.empty(), fn square, b -> Bitboard.set_bit(b, square.index) end)
+    top_right
+    |> Bitboard.union(bottom_right)
+    |> Bitboard.union(top_left)
+    |> Bitboard.union(bottom_left)
   end
 end

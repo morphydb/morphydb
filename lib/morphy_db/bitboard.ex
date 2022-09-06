@@ -20,12 +20,14 @@ defmodule MorphyDb.Bitboard do
   @doc """
     Returns true if the bit is set
   """
-  def is_set?(%Bitboard{} = bitboard, bitnumber), do: get_bit(bitboard, bitnumber) === to_bit(bitnumber)
+  def is_set?(%Bitboard{} = bitboard, bitnumber),
+    do: get_bit(bitboard, bitnumber) === to_bit(bitnumber)
 
   @doc """
     Unsets the bit in the bitboard
   """
-  def unset(%Bitboard{} = bitboard, bitnumber), do: if is_set?(bitboard, bitnumber), do: toggle(bitboard, bitnumber), else: bitboard
+  def unset(%Bitboard{} = bitboard, bitnumber),
+    do: if(is_set?(bitboard, bitnumber), do: toggle(bitboard, bitnumber), else: bitboard)
 
   @doc """
     Gets the bitboard with only the value at bitnumber
@@ -51,7 +53,8 @@ defmodule MorphyDb.Bitboard do
   @doc """
     Determines whether bitboard1 and bitboard2 intersects
   """
-  def intersects?(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2), do: intersect(bitboard1, bitboard2).value > 0
+  def intersects?(%Bitboard{} = bitboard1, %Bitboard{} = bitboard2),
+    do: intersect(bitboard1, bitboard2).value > 0
 
   @doc """
     Returns the intersection of two bitboards
@@ -118,6 +121,6 @@ defmodule MorphyDb.Bitboard do
 
     IO.puts("      A  B  C  D  E  F  G  H")
     IO.puts("")
-    IO.puts("      Bitboard: #{bitboard}")
+    IO.puts("      Bitboard: #{bitboard.value}")
   end
 end

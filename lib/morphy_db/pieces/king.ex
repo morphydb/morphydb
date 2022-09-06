@@ -7,22 +7,26 @@ defmodule MorphyDb.Pieces.King do
   alias MorphyDb.Position
   alias MorphyDb.Square
   alias MorphyDb.File
+  alias MorphyDb.Pieces.Piece.Attacks
 
   def attack_mask(%Position{} = position, %Square{} = square, :w) do
     unrestricted_movement(square)
-    |> Bitboard.intersect(position.all_pieces[:b])
+    |> Attacks.filter_friendly(position, :w)
   end
 
   def attack_mask(%Position{} = position, %Square{} = square, :b) do
     unrestricted_movement(square)
-    |> Bitboard.intersect(position.all_pieces[:w])
+    |> Attacks.filter_friendly(position, :b)
   end
 
-  def move_mask(%Position{} = position, %Square{} = square, side) do
+  def move_mask(%Position{} = position, %Square{} = square, :w) do
     unrestricted_movement(square)
-    |> Bitboard.except(position.all_pieces[:w])
-    |> Bitboard.except(position.all_pieces[:b])
-    |> Bitboard.union(attack_mask(position, square, side))
+    |> Bitboard.except(Position.white_pieces(position))
+  end
+
+  def move_mask(%Position{} = position, %Square{} = square, :b) do
+    unrestricted_movement(square)
+    |> Bitboard.except(Position.black_pieces(position))
   end
 
   defp unrestricted_movement(%Square{} = square) do
@@ -33,7 +37,6 @@ defmodule MorphyDb.Pieces.King do
     |> conditional_union(bitboard |> Bitboard.shift_right(9), File.file(7))
     |> conditional_union(bitboard |> Bitboard.shift_right(7), File.file(0))
     |> conditional_union(bitboard |> Bitboard.shift_right(1), File.file(7))
-
     |> conditional_union(bitboard |> Bitboard.shift_left(8), File.file(7))
     |> conditional_union(bitboard |> Bitboard.shift_left(9), File.file(0))
     |> conditional_union(bitboard |> Bitboard.shift_left(7), File.file(7))

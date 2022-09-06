@@ -3,11 +3,11 @@
   :on-click-away="deselect"
   :hook="Board"
 >
-  {#for square <- @squares}
+  {#for square <- @board.squares}
     <SquareComponent
       id={"square-#{square.index}"}
       square={square}
-      piece={Position.piece(@position, square)}
+      piece={Position.piece(@board.position, square)}
       click="square_click"
       is_selected={@selected_square === square}
       is_selected_with_ctrl={Square.is_set?(@selected_ctrl_squares, square)}

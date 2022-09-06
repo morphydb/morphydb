@@ -108,7 +108,6 @@ defmodule MorphyDb.Parsers.FenParser do
          value,
          context = %Position{
            pieces: pieces,
-           all_pieces: all_pieces,
            rank: rank,
            file: file
          },
@@ -119,18 +118,13 @@ defmodule MorphyDb.Parsers.FenParser do
 
     piece = value |> map_piece()
     bitboard = pieces[piece] |> Bitboard.set_bit(square.current)
-    {side, _} = piece
-
-    side_bitboard = all_pieces[side] |> Bitboard.set_bit(square.current)
 
     updated_pieces = %{pieces | piece => bitboard}
-    updated_all_pieces = %{all_pieces | side => side_bitboard}
 
     {[],
      %{
        context
        | pieces: updated_pieces,
-         all_pieces: updated_all_pieces,
          rank: square.rank,
          file: square.file
      }}

@@ -24,10 +24,6 @@ defmodule MorphyDb.Position do
       {:b, :k} => Bitboard.empty(),
       {:b, :q} => Bitboard.empty()
     },
-    all_pieces: %{
-      :w => Bitboard.empty(),
-      :b => Bitboard.empty()
-    },
     rank: 7,
     file: 0
   ]
@@ -44,5 +40,18 @@ defmodule MorphyDb.Position do
       [{{side, piece}, _bitboard}] -> {side, piece}
       [] -> {nil, nil}
     end
+  end
+
+  def white_pieces(%MorphyDb.Position{} = position), do: pieces(position, :w)
+
+  def black_pieces(%MorphyDb.Position{} = position), do: pieces(position, :b)
+
+  def all_pieces(%MorphyDb.Position{} = position), do: white_pieces(position) |> Bitboard.union(black_pieces(position))
+
+  def pieces(%MorphyDb.Position{pieces: pieces}, side) do
+    pieces
+    |> Map.filter(fn {{color, _}, _} -> color == side end)
+    |> Map.values()
+    |> List.foldl(Bitboard.empty(), fn board, acc -> Bitboard.union(board, acc) end)
   end
 end

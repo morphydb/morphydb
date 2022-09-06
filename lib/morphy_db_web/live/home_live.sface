@@ -14,7 +14,7 @@
 
   <div class="flex gap-2">
     <div class="basis-2/3 lg:basis-5/12 flex flex-col gap-3">
-      <BoardComponent id="main_board" position={@position} />
+      <BoardComponent id="main_board" board={@board} />
 
       <form action="javascript:void(0)" :on-submit="load_fen" class="flex gap-2">
         <input type="text" name="fen" value={@fen} class="form-control input input-bordered w-full" x-on:focus="$event.target.select()">

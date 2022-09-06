@@ -2,6 +2,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   use MorphyDbWeb, :surface_live_component
 
   alias MorphyDb.Bitboard
+  alias MorphyDb.Board
   alias MorphyDb.Square
   alias MorphyDb.Position
   alias MorphyDb.Pieces.Piece
@@ -13,21 +14,15 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   data selected_ctrl_squares, :integer, default: Bitboard.empty()
   data move_squares, :integer, default: Bitboard.empty()
   data attacked_squares, :integer, default: Bitboard.empty()
-  prop position, :struct
 
+  prop board, :struct
   def update(assigns, socket) do
-    {:ok, socket |> setup(assigns.position)}
+    {:ok, socket |> setup(assigns.board)}
   end
 
-  defp setup(socket, position) do
-    squares =
-      for(rank <- 7..0, file <- 0..7, do: 8 * rank + file)
-      |> Enum.map(fn square -> Square.new(square) end)
-
+  defp setup(socket, board) do
     socket
-    |> assign(:squares, squares)
-    |> assign(:position, position)
-    |> assign(:white_bottom, true)
+    |> assign(:board, board)
   end
 
   def handle_event(
@@ -60,7 +55,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     {:noreply,
      socket
      |> update(:selected_alt_squares, &Square.toggle(&1, square))
-     |> assign(:selected_square, :nil)
+     |> assign(:selected_square, nil)
      |> update(:selected_ctrl_squares, &Square.deselect(&1, square))}
   end
 
@@ -77,7 +72,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     {:noreply,
      socket
      |> update(:selected_ctrl_squares, &Square.toggle(&1, square))
-     |> assign(:selected_square, :nil)
+     |> assign(:selected_square, nil)
      |> update(:selected_alt_squares, &Square.deselect(&1, square))}
   end
 
@@ -92,18 +87,12 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   end
 
   def handle_event("flip", _params, socket) do
-    white_bottom = not socket.assigns.white_bottom
-
-    squares =
-      if white_bottom,
-        do: for(rank <- 7..0, file <- 0..7, do: 8 * rank + file),
-        else: for(rank <- 0..7, file <- 7..0, do: 8 * rank + file)
-      |> Enum.map(fn square -> Square.new(square) end)
+    board = socket.assigns.board
 
     {:noreply,
      socket
-     |> assign(:white_bottom, white_bottom)
-     |> assign(:squares, squares)}
+     |> assign(:board, Board.flip(board))
+    }
   end
 
   defp has_selected_square(socket) do
@@ -130,7 +119,8 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   end
 
   defp assign_move_squares(socket, %Square{} = square) do
-    position = socket.assigns.position
+    board = socket.assigns.board
+    position = board.position
 
     {side, piece} = Position.piece(position, square)
     move_squares = Piece.Moves.mask(piece, position, square, side)
@@ -139,7 +129,8 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   end
 
   defp assign_attacked_squares(socket, %Square{} = square) do
-    position = socket.assigns.position
+    board = socket.assigns.board
+    position = board.position
 
     {side, piece} = Position.piece(position, square)
     attacked_squares = Piece.Attacks.mask(piece, position, square, side)
