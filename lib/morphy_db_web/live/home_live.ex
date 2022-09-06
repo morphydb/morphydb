@@ -8,7 +8,7 @@ defmodule MorphyDbWeb.HomeLive do
 
   def mount(_params, _session, socket) do
     {:ok,
-     socket |> setup("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10"),
+     socket |> setup("rnbqkbnr/pp4pp/P4p1P/3p4/2pPp3/8/1PP1PPP1/RNBQKBNR b KQkq d3 0 8"),
      temporary_assigns: [error: []]}
   end
 
