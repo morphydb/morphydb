@@ -1,4 +1,4 @@
 *.scss
 *.css
-*.js
+app.js
 *.map
