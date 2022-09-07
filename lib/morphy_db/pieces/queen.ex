@@ -1,6 +1,4 @@
 defmodule MorphyDb.Pieces.Queen do
-  defstruct []
-
   alias MorphyDb.Pieces.Bishop
   alias MorphyDb.Pieces.Rook
   alias MorphyDb.Bitboard
@@ -8,14 +6,14 @@ defmodule MorphyDb.Pieces.Queen do
   alias MorphyDb.Square
   alias MorphyDb.Position
 
-  def attack_mask(%Position{} = position, %Square{} = square, side)
-      when side === :w or side === :b do
+  @spec attack_mask(MorphyDb.Position.t(), MorphyDb.Square.t(), MorphyDb.Side.t()) :: MorphyDb.Bitboard.t()
+  def attack_mask(%Position{} = position, %Square{} = square, side) do
     Rook.attack_mask(position, square, side)
     |> Bitboard.union(Bishop.attack_mask(position, square, side))
   end
 
-  def move_mask(%Position{} = position, %Square{} = square, side)
-      when side === :w or side === :b do
+  @spec move_mask(MorphyDb.Position.t(), MorphyDb.Square.t(), MorphyDb.Side.t()) :: MorphyDb.Bitboard.t()
+  def move_mask(%Position{} = position, %Square{} = square, side) do
     Rook.move_mask(position, square, side)
     |> Bitboard.union(Bishop.move_mask(position, square, side))
   end

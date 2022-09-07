@@ -5,7 +5,7 @@
 >
   {#for square <- @board.squares}
     <SquareComponent
-      id={"square-#{square.index}"}
+      id={"square-#{square.file}#{square.rank}"}
       square={square}
       piece={Position.piece(@board.position, square)}
       click="square_click"

@@ -1,4 +1,5 @@
 defmodule MorphyDb.Parsers.FenParser do
+  alias MorphyDb.File
   alias MorphyDb.Position
   alias MorphyDb.Bitboard
   alias MorphyDb.Square
@@ -80,9 +81,9 @@ defmodule MorphyDb.Parsers.FenParser do
     {[], %Position{fen: fen}}
   end
 
-  defp next_square(rank, file), do: next_square(rank, file, 1)
+  defp next_square(file, rank), do: next_square(file, rank, 1)
 
-  defp next_square(rank, file, amount) do
+  defp next_square(file, rank, amount) do
     square = 8 * rank + file
 
     next_f = file + amount
@@ -94,14 +95,14 @@ defmodule MorphyDb.Parsers.FenParser do
   defp duplicate_nil_piece(
          _rest,
          value,
-         context = %Position{rank: rank, file: file},
+         context = %Position{file: file, rank: rank},
          _line,
          _offset
        ) do
     amount = String.to_integer(to_string(value))
-    square = next_square(rank, file, amount)
+    square = next_square(file, rank, amount)
 
-    {[], %{context | rank: square.rank, file: square.file}}
+    {[], %{context | file: square.file, rank: square.rank}}
   end
 
   defp piece_placement(
@@ -115,7 +116,7 @@ defmodule MorphyDb.Parsers.FenParser do
          _line,
          _offset
        ) do
-    square = next_square(rank, file)
+    square = next_square(file, rank)
 
     piece = value |> map_piece()
     bitboard = pieces[piece] |> Bitboard.set_bit(square.current)
@@ -146,7 +147,7 @@ defmodule MorphyDb.Parsers.FenParser do
   defp en_passant(_rest, value, context = %Position{}, _, _) do
     [rank, file] = value
 
-    {[], %{context | en_passant: Square.new(file - ?a, rank - ?1)}}
+    {[], %{context | en_passant: Square.new(File.to_file(file - ?a), rank - ?1)}}
   end
 
   defp castling_ability(

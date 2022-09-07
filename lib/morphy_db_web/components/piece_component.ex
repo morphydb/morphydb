@@ -1,7 +1,7 @@
 defmodule MorphyDbWeb.Components.PieceComponent do
   use MorphyDbWeb, :surface_live_component
 
-  prop square, :integer, required: true
+  prop square, :struct, required: true
   prop piece, :struct, required: true
 
   defp piece_image({nil, nil}) do

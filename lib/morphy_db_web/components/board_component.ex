@@ -16,6 +16,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   data attacked_squares, :integer, default: Bitboard.empty()
 
   prop board, :struct
+
   def update(assigns, socket) do
     {:ok, socket |> setup(assigns.board)}
   end
@@ -56,7 +57,9 @@ defmodule MorphyDbWeb.Components.BoardComponent do
      socket
      |> update(:selected_alt_squares, &Square.toggle(&1, square))
      |> assign(:selected_square, nil)
-     |> update(:selected_ctrl_squares, &Square.deselect(&1, square))}
+     |> clear_move_squares()
+     |> clear_attacked_squares()
+   |> update(:selected_ctrl_squares, &Square.deselect(&1, square))}
   end
 
   def handle_event(
@@ -73,6 +76,8 @@ defmodule MorphyDbWeb.Components.BoardComponent do
      socket
      |> update(:selected_ctrl_squares, &Square.toggle(&1, square))
      |> assign(:selected_square, nil)
+     |> clear_move_squares()
+     |> clear_attacked_squares()
      |> update(:selected_alt_squares, &Square.deselect(&1, square))}
   end
 
