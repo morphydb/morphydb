@@ -14,8 +14,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   data selected_ctrl_squares, :integer, default: Bitboard.empty()
   data move_squares, :integer, default: Bitboard.empty()
   data attacked_squares, :integer, default: Bitboard.empty()
-  data arrows, :list, default: []
-  data is_drawing_arrow, :boolean, default: false
+  data arrow, :struct
 
   prop board, :struct
 
@@ -38,7 +37,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
       |> String.to_integer()
       |> Square.new()
 
-    if has_selected_square(socket) or Enum.count(socket.assigns.arrows) > 0 do
+    if has_selected_square(socket) or socket.assigns.arrow !== %{} do
       {:noreply, socket |> clear_selected_squares}
     else
       {:noreply, socket |> select_square(square)}
@@ -98,44 +97,39 @@ defmodule MorphyDbWeb.Components.BoardComponent do
 
     {:noreply,
      socket
-     |> assign(:board, Board.flip(board))}
+     |> assign(:board, Board.flip(board))
+     |> push_event("arrow_redraw", %{})}
   end
 
   def handle_event("mousedown", %{"square" => square_string}, socket) do
     {:noreply,
      socket
-     |> update(:arrows, &[%{start: square_string, end: nil} | &1])
-     |> assign(:is_drawing_arrow, true)
+     |> assign(:arrow, %{start: square_string, end: nil})
      |> push_event("arrow_start", %{square: square_string})}
   end
 
   def handle_event("mouseover", %{"square" => square_string}, socket) do
     {:noreply,
      socket
-     |> update_mouseover(socket.assigns.arrows, socket.assigns.is_drawing_arrow, square_string)}
+     |> update_mouseover(socket.assigns.arrow, square_string)}
   end
 
   def handle_event("mouseup", %{"square" => square_string}, socket) do
     {:noreply,
      socket
-     |> assign(:is_drawing_arrow, false)
+     |> assign(:arrow, %{})
      |> push_event("arrow_end", %{square: square_string})}
   end
 
-  defp update_mouseover(socket, [], _, _), do: socket
-  defp update_mouseover(socket, _, false, _), do: socket
+  defp update_mouseover(socket, %{end: e}, square_string) when e === square_string, do: socket
 
-  defp update_mouseover(socket, [%{end: e} = _ | _], _, square_string) when e === square_string,
-    do: socket
-
-  defp update_mouseover(socket, [%{end: e} = arrow | arrows], true, square_string)
-       when e !== square_string do
-    updated = [%{arrow | end: square_string} | arrows]
-
+  defp update_mouseover(socket, %{end: e} = arrow, square_string) when e !== square_string do
     socket
-    |> assign(:arrows, updated)
+    |> assign(:arrow, %{arrow | end: square_string})
     |> push_event("arrow_update", %{square: square_string})
   end
+
+  defp update_mouseover(socket, %{}, _), do: socket
 
   defp has_selected_square(socket) do
     socket.assigns
@@ -198,5 +192,9 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     socket |> assign(:move_squares, Bitboard.empty())
   end
 
-  defp clear_arrows(socket), do: socket |> assign(:arrows, []) |> push_event("arrow_clear", %{})
+  defp clear_arrows(socket),
+    do:
+      socket
+      |> assign(:arrow, %{})
+      |> push_event("arrow_clear", %{})
 end
