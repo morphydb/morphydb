@@ -34,10 +34,26 @@ let csrfToken = document
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   metadata: {
-    click: (e, el) => {
+    click: e => {
       return {
         alt_key: e.altKey,
         ctrl_key: e.ctrlKey,
+      }
+    },
+    mouseover: e => {
+      return {
+        alt_key: e.altKey,
+        ctrl_key: e.ctrlKey,
+        left_button: e.buttons & 1 === 1,
+        right_button: e.buttons & 2 === 2
+      }
+    },
+    mousedown: e => {
+      return {
+        alt_key: e.altKey,
+        ctrl_key: e.ctrlKey,
+        left_button: e.buttons & 1 === 1,
+        right_button: e.buttons & 2 === 2
       }
     }
   },
@@ -55,6 +71,7 @@ let liveSocket = new LiveSocket("/live", Socket, {
 topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
 window.addEventListener("phx:page-loading-start", (info) => topbar.show());
 window.addEventListener("phx:page-loading-stop", (info) => topbar.hide());
+document.addEventListener("contextmenu", e => e.preventDefault());
 
 // connect if there are any LiveViews on the page
 liveSocket.connect();

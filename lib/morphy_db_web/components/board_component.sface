@@ -1,5 +1,5 @@
 <div
-  class="grid grid-cols-8 grid-rows-8 aspect-square"
+  class="board grid grid-cols-8 grid-rows-8 aspect-square"
   :on-click-away="deselect"
   :hook="Board"
 >

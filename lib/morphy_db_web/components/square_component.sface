@@ -1,5 +1,5 @@
 <div
-  id={"square-#{@square.file}#{@square.rank}"}
+  id={"square-#{Square.to_index(@square)}"}
   class={
     "square",
     "relative",
@@ -11,6 +11,7 @@
   }
   :on-click={@click}
   phx-value-square={Square.to_index(@square)}
+  :hook="Square"
 >
   <div class={
     "absolute",
@@ -27,6 +28,6 @@
       "rounded-full border-8 border-slate-500": @is_attacked
       }>
     </div>
-      <PieceComponent square={@square} piece={@piece} id={"piece-#{@square.file}#{@square.rank}"} />
+      <PieceComponent square={@square} piece={@piece} id={"piece-#{Square.to_index(@square)}"} />
   </div>
 </div>
