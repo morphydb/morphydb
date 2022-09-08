@@ -15,6 +15,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
   data move_squares, :integer, default: Bitboard.empty()
   data attacked_squares, :integer, default: Bitboard.empty()
   data arrow, :struct
+  data has_arrows, :boolean, default: false
 
   prop board, :struct
 
@@ -37,7 +38,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
       |> String.to_integer()
       |> Square.new()
 
-    if has_selected_square(socket) or socket.assigns.arrow !== %{} do
+    if has_selected_square(socket) or socket.assigns.has_arrows do
       {:noreply, socket |> clear_selected_squares}
     else
       {:noreply, socket |> select_square(square)}
@@ -105,6 +106,7 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     {:noreply,
      socket
      |> assign(:arrow, %{start: square_string, end: nil})
+     |> assign(:has_arrows, true)
      |> push_event("arrow_start", %{square: square_string})}
   end
 
@@ -196,5 +198,6 @@ defmodule MorphyDbWeb.Components.BoardComponent do
     do:
       socket
       |> assign(:arrow, %{})
+      |> assign(:has_arrows, false)
       |> push_event("arrow_clear", %{})
 end

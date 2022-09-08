@@ -12,6 +12,7 @@
   :on-click={@click}
   phx-value-square={Square.to_index(@square)}
   :hook="Square"
+  data-piece={@piece |> elem(1)}
 >
   <div class={
     "absolute",
