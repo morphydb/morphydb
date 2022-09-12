@@ -1,4 +1,4 @@
-# ChessDb
+# Chess
 
 To start your Phoenix server:
 
