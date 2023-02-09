@@ -1,6 +1,6 @@
 defmodule ChessWeb.Components.SquareComponent do
   alias Phoenix.LiveView.JS
-  alias Game.Square
+  alias Chess.Games.Square
 
   use ChessWeb, :live_component
 
@@ -28,9 +28,6 @@ defmodule ChessWeb.Components.SquareComponent do
           "inset-0",
           "w-full",
           "h-full",
-          @highlighted && "bg-red-600/75",
-          @highlighted_ctrl && "bg-yellow-300/75",
-          @highlighted_alt && "bg-green-600/75"
         ]}>
         </div>
         <div class="absolute inset-0 w-full h-full cursor-pointer">
@@ -46,6 +43,11 @@ defmodule ChessWeb.Components.SquareComponent do
     """
   end
 
+  # @highlighted && "bg-red-600/75",
+  # @highlighted_ctrl && "bg-yellow-300/75",
+  # @highlighted_alt && "bg-green-600/75"
+
+
   defp render_piece(:p), do: "b_p.svg"
   defp render_piece(:r), do: "b_r.svg"
   defp render_piece(:n), do: "b_n.svg"
@@ -60,5 +62,5 @@ defmodule ChessWeb.Components.SquareComponent do
   defp render_piece(:Q), do: "w_q.svg"
   defp render_piece(:K), do: "w_k.svg"
 
-  defp render_piece(nil), do: "none.svg"
+  defp render_piece(:empty), do: "none.svg"
 end

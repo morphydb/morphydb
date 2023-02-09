@@ -1,7 +1,6 @@
-defmodule Game.Position do
+defmodule Chess.Games.Position do
   alias Chess.Bitboard
-  alias Game.Square
-  alias Game.Parsers.FenParser
+  alias Chess.Games.Square
 
   alias __MODULE__
 

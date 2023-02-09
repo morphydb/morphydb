@@ -18,7 +18,7 @@ defmodule ChessWeb.Router do
     pipe_through :browser
 
     live "/", PageLive
-    live "/:game_id", PageLive
+    live "/:room_id", PageLive
   end
 
   # Other scopes may use custom stacks.

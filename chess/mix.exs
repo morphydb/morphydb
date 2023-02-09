@@ -56,7 +56,8 @@ defmodule Chess.MixProject do
       {:dialyxir, "~> 1.2", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.14.6", only: :test},
       {:nanoid, "~> 2.0"},
-      {:nimble_parsec, "~> 1.2"}
+      {:nimble_parsec, "~> 1.2"},
+      {:horde, "~> 0.8.7"}
     ]
   end
 

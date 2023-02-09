@@ -1,44 +1,75 @@
 defmodule ChessWeb.PageLive do
   use ChessWeb, :live_view
 
+  alias Chess.Games.FenParser
+  alias Chess.Games.Events.FenLoaded
+  alias Chess.GamePubSub
+  alias Phoenix.LiveView
+  alias Chess.Rooms.Room
   alias ChessWeb.Components.GameComponent
-  alias Game.GameCode
 
-  def render(assigns) do
-    ~H"""
-    <.live_component module={GameComponent} id="game" game_code={@game_code} />
-    """
-  end
+  @impl LiveView
+  def mount(%{"room_id" => room_id}, _session, socket) do
+    case Room.exists?(room_id) do
+      false ->
+        {:ok, push_redirect(socket, to: ~p(/))}
 
-  def handle_params(%{"game_id" => game_id} = _params, _uri, socket) do
-    game_code = GameCode.create(game_id)
+      true ->
+        if connected?(socket), do: GamePubSub.subscribe(room_id)
 
-    case Game.get_position(game_code) do
-      {:error, :game_not_found} -> {:noreply, push_redirect(socket, to: ~p(/))}
-
-      {:ok, _position} ->
-        Game.subscribe(game_code)
-
-        {:noreply,
+        {:ok,
          socket
-         |> assign(:game_code, game_code)}
+         |> assign(
+           %{room_id: room_id, fen: nil, position: [], arrows: []}
+           |> set_state(Room.current_events(room_id))
+         )}
     end
   end
 
-  def handle_params(_params, _url, socket) do
-    game_code = Game.new()
+  @impl LiveView
+  def mount(_params, _session, socket) do
+    room_id = Nanoid.generate()
+    Room.create_room(room_id)
 
-    {:noreply, push_redirect(socket, to: ~p(/#{game_code.game_id}))}
+    {:ok, push_redirect(socket, to: ~p(/#{room_id}))}
   end
 
-  def handle_info({:updated}, socket) do
-    send_update(GameComponent, id: "game")
-    {:noreply, socket}
+  @impl LiveView
+  def render(assigns) do
+    ~H"""
+    <.live_component
+      module={GameComponent}
+      id="game"
+      room_id={@room_id}
+      fen={@fen}
+      position={@position}
+      arrows={@arrows}
+    />
+    """
   end
 
-  def handle_event("load_fen", %{"fen" => fen}, socket) do
-    game_code = Game.new(fen)
+  @impl LiveView
+  def handle_info(event, socket) do
+    state =
+      apply_event(event, socket.assigns)
+      |> clean_assigns()
 
-    {:noreply, push_patch(socket, to: ~p(/#{game_code.game_id}))}
+    {:noreply, socket |> assign(state)}
   end
+
+  defp clean_assigns(assigns) do
+    {_, clean_assigns} = Map.pop!(assigns, :flash)
+    clean_assigns
+  end
+
+  defp set_state(state, events),
+    do: Enum.reduce(events, state, fn e, state -> apply_event(e, state) end)
+
+  defp apply_event(%FenLoaded{fen: fen}, state) do
+    position = FenParser.parse!(fen)
+
+    %{state | fen: fen, position: position.position, arrows: position.arrows}
+  end
+
+  defp apply_event(_event, state), do: state
 end

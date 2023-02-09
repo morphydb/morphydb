@@ -1,7 +1,7 @@
-defmodule Game.Parsers.FenParser do
+defmodule Chess.Games.FenParser do
   alias Chess.Bitboard
-  alias Game.Position
-  alias Game.Square
+  alias Chess.Games.Position
+  alias Chess.Games.Square
 
   def parse!(fen) do
     {:ok, position} = parse(fen)

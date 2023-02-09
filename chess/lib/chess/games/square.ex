@@ -1,4 +1,4 @@
-defmodule Game.Square do
+defmodule Chess.Games.Square do
   alias __MODULE__
 
   import Bitwise
