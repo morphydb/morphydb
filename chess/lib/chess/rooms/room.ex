@@ -2,9 +2,12 @@ defmodule Chess.Rooms.Room do
   use GenServer
 
   alias __MODULE__
+  import Chess.Games.Commands.CommandHandler
   alias Chess.Games.Commands.LoadFen
   alias Chess.GamePubSub
   alias Chess.Games.Game
+
+  require Logger
 
   @registry :room_registry
   @supervisor Chess.Rooms.RoomSupervisor
@@ -50,7 +53,7 @@ defmodule Chess.Rooms.Room do
   def init(room_id) do
     {:ok,
      %{room_id: room_id, events: []}
-     |> handle_command(%LoadFen{fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"})}
+     |> dispatch_command(%LoadFen{fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"})}
   end
 
   def child_spec(room_id) do
@@ -71,18 +74,35 @@ defmodule Chess.Rooms.Room do
   def handle_cast({:dispatch, command}, state),
     do:
       state
-      |> handle_command(command)
+      |> dispatch_command(command)
       |> reply_cast()
 
-  defp handle_command(state, command),
+  defp dispatch_command(state, command),
     do:
       state.events
-      |> Game.handle_message(command)
+      |> Game.build_state()
+      |> log_command(command)
+      |> (fn state -> handle_command(command, state) end).()
+      |> log_events()
       |> dispatch_events(state.room_id)
       |> build_new_state(state)
 
+  defp log_command(state, command) do
+    Logger.info("Dispatching command #{inspect(command)} on state #{inspect(state)}")
+    state
+  end
+
+  defp log_events(events) do
+    IO.puts("************** EVENTS **************")
+    for event <- events, do: IO.puts("Event #{inspect(event)}")
+    IO.puts("************** /EVENTS **************")
+
+    events
+  end
+
   defp dispatch_events(events, room_id) do
-    for event <- events, do: GamePubSub.publish(room_id, event)
+    # for event <- events, do: GamePubSub.publish(room_id, event)
+    GamePubSub.publish(room_id, [events] |> List.flatten())
 
     events
   end

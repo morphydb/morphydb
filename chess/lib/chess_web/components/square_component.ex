@@ -21,13 +21,16 @@ defmodule ChessWeb.Components.SquareComponent do
         "absolute",
         "inset-0",
         @selected && Square.dark?(@square) && "backdrop-brightness-125",
-        @selected && Square.light?(@square) && "backdrop-brightness-110"
+        @selected && Square.light?(@square) && "backdrop-brightness-110",
+        @highlighted && "bg-red-600/75",
+        @highlighted_ctrl && "bg-yellow-300/75",
+        @highlighted_alt && "bg-green-600/75"
       ]}>
         <div class={[
           "absolute",
           "inset-0",
           "w-full",
-          "h-full",
+          "h-full"
         ]}>
         </div>
         <div class="absolute inset-0 w-full h-full cursor-pointer">
@@ -42,11 +45,6 @@ defmodule ChessWeb.Components.SquareComponent do
     </div>
     """
   end
-
-  # @highlighted && "bg-red-600/75",
-  # @highlighted_ctrl && "bg-yellow-300/75",
-  # @highlighted_alt && "bg-green-600/75"
-
 
   defp render_piece(:p), do: "b_p.svg"
   defp render_piece(:r), do: "b_r.svg"

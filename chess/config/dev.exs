@@ -49,7 +49,8 @@ config :chess, ChessWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/chess_web/(live|components)/.*(ex)$",
-      ~r"lib/chess_web/templates/.*(eex)$"
+      ~r"lib/chess_web/templates/.*(eex)$",
+      ~r"lib/chess/*/.*(ex)$"
     ]
   ]
 

@@ -26,8 +26,8 @@ defmodule Chess.Bitboard do
       |> band(2 ** bit)
       |> new() != empty()
 
-  def clear(%Bitboard{} = bitboard, bit), do:
-    if (set?(bitboard, bit)), do: toggle(bitboard, bit), else: bitboard
+  def clear(%Bitboard{} = bitboard, bit),
+    do: if(set?(bitboard, bit), do: toggle(bitboard, bit), else: bitboard)
 
   def toggle(%Bitboard{value: bitboard}, bit),
     do:

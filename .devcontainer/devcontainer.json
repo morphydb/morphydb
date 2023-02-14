@@ -18,7 +18,8 @@
 				"esbenp.prettier-vscode",
 				"samuel-pordeus.elixir-test",
 				"ryanluker.vscode-coverage-gutters",
-				"jakeboone02.cypher-query-language"
+				"jakeboone02.cypher-query-language",
+				"ms-vscode.vscode-typescript-next"
 			],
 			"settings": {
 				"phoenix-heex": "html",

@@ -1,5 +1,8 @@
 defmodule ChessWeb.Components.GameComponent do
+  alias Chess.Games.Commands.HighlightSquare
+  alias Chess.Games.Commands.SelectSquare
   alias Chess.Games.Commands.LoadFen
+  alias Chess.Games.Commands.ClearMarks
   alias Phoenix.LiveComponent
 
   alias Chess.Rooms.Room
@@ -12,7 +15,7 @@ defmodule ChessWeb.Components.GameComponent do
 
   @impl LiveComponent
   def mount(socket) do
-    {:ok, socket |> assign(:orientation, :w) |> assign(:selected, nil)}
+    {:ok, socket |> assign(:orientation, :w)}
   end
 
   @impl LiveComponent
@@ -33,12 +36,12 @@ defmodule ChessWeb.Components.GameComponent do
                 module={SquareComponent}
                 id={"square-#{square.index}"}
                 square={square}
-                selected={@selected === square.index}
+                selected={@selected_square === square.index}
                 piece={@position |> find_piece(square)}
+                highlighted={Map.get(@highlighted_squares, square.index) == :normal}
+                highlighted_alt={Map.get(@highlighted_squares, square.index) == :alt}
+                highlighted_ctrl={Map.get(@highlighted_squares, square.index) == :ctrl}
               />
-              <%!-- highlighted={@position.highlight |> Bitboard.set?(square.index)}
-            highlighted_alt={@position.highlight_alt |> Bitboard.set?(square.index)}
-            highlighted_ctrl={@position.highlight_ctrl |> Bitboard.set?(square.index)} --%>
             <% end %>
           </div>
           <svg-container orientation={@orientation}>
@@ -85,7 +88,7 @@ defmodule ChessWeb.Components.GameComponent do
           </div>
         </div>
         <div class="max-w-fit">
-          This is the move table
+          This is the move table <%= @orientation %>
         </div>
       </div>
     </div>
@@ -93,40 +96,83 @@ defmodule ChessWeb.Components.GameComponent do
   end
 
   defp find_piece(position, %Square{rank: rank, file: file}) do
-    position |> Enum.at(rank) |> Enum.at(file)
+    position |> Enum.at(7 - rank) |> Enum.at(7 - file)
   end
 
-  # def handle_event("deselect", _params, socket) do
-  #   Game.clear(socket.assigns.game_code)
+  @impl LiveComponent
+  def handle_event("deselect", _params, socket) do
+    #   Game.clear(socket.assigns.game_code)
 
-  #   {:noreply, assign(socket, :selected, nil)}
-  # end
-
-  # def handle_event("keydown", %{"key" => "Escape"}, socket) do
-  #   Game.clear(socket.assigns.game_code)
-  #   {:noreply, socket}
-  # end
+    {:noreply, socket}
+  end
 
   @impl LiveComponent
-  def handle_event("keydown", %{"key" => "f"}, socket), do: {:noreply, socket |> flip()}
+  alias Chess.Games.Commands.DrawArrow
+
+  def handle_event("draw-arrow", %{"from" => from, "to" => to}, socket),
+    do: socket |> dispatch(%DrawArrow{from: from, to: to})
 
   @impl LiveComponent
-  def handle_event("keydown", %{"key" => "F"}, socket), do: {:noreply, socket |> flip()}
+  def handle_event("flip", _params, socket), do: socket |> flip()
+
+  @impl LiveComponent
+  def handle_event("highlight", %{"alt_key" => true, "square_index" => square_index}, socket),
+    do: socket |> dispatch(%HighlightSquare{square_index: square_index, mode: :alt})
+
+  @impl LiveComponent
+  def handle_event("highlight", %{"ctrl_key" => true, "square_index" => square_index}, socket),
+    do:
+      socket
+      |> dispatch(%HighlightSquare{
+        square_index: square_index,
+        mode: :ctrl
+      })
+
+  @impl LiveComponent
+  def handle_event(
+        "highlight",
+        %{"square_index" => square_index},
+        socket
+      ),
+      do:
+        socket
+        |> dispatch(%HighlightSquare{
+          square_index: square_index,
+          mode: :normal
+        })
+
+  @impl LiveComponent
+  def handle_event("keydown", %{"key" => "Escape"}, socket), do: socket |> dispatch(%ClearMarks{})
+
+  @impl LiveComponent
+  def handle_event("keydown", %{"key" => "f"}, socket), do: socket |> flip()
+
+  @impl LiveComponent
+  def handle_event("keydown", %{"key" => "F"}, socket), do: socket |> flip()
 
   @impl LiveComponent
   def handle_event("keydown", _params, socket), do: {:noreply, socket}
 
   @impl LiveComponent
-  def handle_event("flip", _params, socket), do: {:noreply, socket |> flip()}
+  def handle_event("load_fen", %{"fen" => fen}, socket),
+    do: socket |> dispatch(%LoadFen{fen: fen})
 
   @impl LiveComponent
-  def handle_event("load_fen", %{"fen" => fen}, socket) do
-    Room.dispatch(socket.assigns.room_id, %LoadFen{fen: fen})
+  def handle_event(
+        "select",
+        %{"square_index" => square_index},
+        socket
+      ),
+      do: socket |> dispatch(%SelectSquare{square_index: square_index})
+
+  defp flip(%{assigns: %{orientation: :w}} = socket),
+    do: {:noreply, assign(socket, :orientation, :b)}
+
+  defp flip(%{assigns: %{orientation: :b}} = socket),
+    do: {:noreply, assign(socket, :orientation, :w)}
+
+  defp dispatch(%{assigns: %{room_id: room_id}} = socket, command) do
+    Room.dispatch(room_id, command)
     {:noreply, socket}
   end
-
-  # def handle_event(_event, _params, socket), do: {:noreply, socket}
-
-  defp flip(%{assigns: %{orientation: :w}} = socket), do: assign(socket, :orientation, :b)
-  defp flip(%{assigns: %{orientation: :b}} = socket), do: assign(socket, :orientation, :w)
 end
