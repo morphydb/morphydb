@@ -63,7 +63,7 @@ defmodule MorphyDb.MixProject do
       {:elixir_sense, github: "elixir-lsp/elixir_sense"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:nimble_parsec, "~> 1.0"},
-      {:excoveralls, "~> 0.14.6", only: :test}
+      {:excoveralls, "~> 0.16.0", only: :test}
     ]
   end
 
