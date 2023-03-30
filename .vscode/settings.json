@@ -1,0 +1,15 @@
+{
+  "emmet.includeLanguages": {
+    "phoenix-heex": "html"
+  },
+  "tailwindCSS.includeLanguages": {
+    "elixir": "html",
+    "phoenix-heex": "html"
+  },
+  "files.associations": {
+    "*.html.heex": "phoenix-heex"
+  },
+  "elixirLS.signatureAfterComplete": true,
+  "elixirLS.suggestSpecs": true,
+  "elixirLS.projectDir": "/chess"
+}

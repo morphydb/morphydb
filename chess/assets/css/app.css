@@ -1,0 +1,9 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* This file is for your main application CSS */
+
+svg-container {
+    @apply absolute left-0 top-0 right-0 bottom-0 pointer-events-none
+}
